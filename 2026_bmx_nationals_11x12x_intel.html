@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GS Nationals #1 — Rider Intel</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap');
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#f7f6f3;--surface:#fff;--surface2:#f0efe9;
+    --border:rgba(0,0,0,0.09);--border-strong:rgba(0,0,0,0.16);
+    --text:#1a1917;--text-2:#5a5855;--text-3:#9a9895;
+    --blue:#2563eb;--blue-bg:#eff4ff;--blue-text:#1d4ed8;
+    --amber-bg:#fffbeb;--amber-text:#b45309;
+    --green:#16a34a;--teal:#0891b2;
+    --gray-bg:#f3f2ef;
+    --bar-gsd1:#0891b2;--bar-sc:#2563eb;--bar-ls:#dc4e2a;--bar-gnw:#7c3aed;--bar-pal:#16a34a;
+    --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+  }
+  body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;padding:2rem 1.5rem 4rem}
+  .page-header{max-width:1750px;margin:0 auto 1.25rem;display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding-bottom:1rem;border-bottom:1.5px solid var(--text)}
+  .page-header h1{font-size:22px;font-weight:600;letter-spacing:-0.02em}
+  .page-header p{font-size:12px;color:var(--text-2);margin-top:3px}
+  .generated{font-size:11px;color:var(--text-3);font-family:var(--mono)}
+  .controls{max-width:1750px;margin:0 auto 0.75rem;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .controls label{font-size:12px;color:var(--text-2);font-weight:500}
+  .controls select{font-family:var(--font);font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);height:30px;cursor:pointer}
+  .controls select:focus{outline:2px solid var(--blue);outline-offset:1px}
+  .legend{max-width:1750px;margin:0 auto 0.75rem;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+  .legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-2);font-family:var(--mono)}
+  .swatch{width:18px;height:5px;border-radius:3px;flex-shrink:0}
+  .legend-note{font-size:11px;color:var(--text-3);font-family:var(--mono)}
+  .table-wrap{max-width:1750px;margin:0 auto;overflow-x:auto;border:1px solid var(--border);border-radius:10px;background:var(--surface);box-shadow:0 1px 4px rgba(0,0,0,0.07)}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  thead tr.grp-row th{font-size:10px;font-weight:600;padding:5px 8px;background:var(--surface2);color:var(--text-2);letter-spacing:.04em;text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap}
+  thead tr.grp-row th.div-l{border-left:1px solid var(--border-strong)}
+  thead tr.col-row th{font-size:10px;font-weight:500;padding:5px 8px;background:var(--surface);color:var(--text-2);text-align:left;border-bottom:1.5px solid var(--border-strong);white-space:nowrap;cursor:pointer;user-select:none;position:sticky;top:0;z-index:1}
+  thead tr.col-row th:hover{color:var(--text);background:var(--surface2)}
+  thead tr.col-row th.active-sort{color:var(--blue);background:var(--blue-bg)}
+  thead tr.col-row th.div-l{border-left:1px solid var(--border-strong)}
+  tbody tr{border-bottom:1px solid var(--border)}
+  tbody tr:last-child{border-bottom:none}
+  tbody tr:hover{background:var(--surface2)}
+  tbody tr.ref-row{background:#f0f7e6}
+  tbody tr.ref-row:hover{background:#e6f2d8}
+  tbody td{padding:6px 8px;vertical-align:middle;color:var(--text)}
+  tbody td.div-l{border-left:1px solid var(--border)}
+  .name-cell{font-weight:500;white-space:nowrap}
+  .ref-tag{font-size:9px;color:var(--text-3);font-family:var(--mono);margin-left:4px;font-style:italic}
+  .badge{display:inline-block;font-size:10px;font-weight:600;padding:1px 6px;border-radius:4px;font-family:var(--mono)}
+  .b-11{background:var(--blue-bg);color:var(--blue-text);border:1px solid rgba(37,99,235,.2)}
+  .b-12{background:var(--amber-bg);color:var(--amber-text);border:1px solid rgba(217,119,6,.2)}
+  .b-ref{background:var(--gray-bg);color:var(--text-2);border:1px dashed var(--border-strong)}
+  .moto-tag{display:inline-block;font-size:10px;font-family:var(--mono);color:var(--text-2);background:var(--gray-bg);border-radius:3px;padding:1px 4px;margin-right:2px}
+  .time{font-family:var(--mono);font-size:11px}
+  .time-good{font-family:var(--mono);font-size:11px;color:var(--green)}
+  .time-teal{font-family:var(--mono);font-size:11px;color:var(--teal)}
+  .time-na{color:var(--text-3);font-family:var(--mono);font-size:11px}
+  .bar-cell{display:flex;align-items:center;gap:4px}
+  .seg-bar{display:inline-block;height:5px;border-radius:3px;flex-shrink:0}
+  .rank-val{font-family:var(--mono);font-size:11px;font-weight:500}
+  .gates-cell{font-family:var(--mono);font-size:11px;color:var(--text-2);white-space:nowrap}
+  .footnote{max-width:1750px;margin:.6rem auto 0;font-size:11px;color:var(--text-3);font-family:var(--mono)}
+  .delta{font-family:var(--mono);font-size:10px;color:#c0392b;margin-left:3px;white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="page-header">
+  <div>
+    <h1>GS Nationals #1 — Rider Intel</h1>
+    <p>Moto assignments · GSNats Day 1 times · So Cal Day 2 · Lonestar Day 2 · GNW Day 2 · PAL May · Shaded = reference only</p>
+  </div>
+  <div class="generated">Generated: May 15, 2026</div>
+</div>
+<div class="controls">
+  <label>Age class</label>
+  <select id="classFilter">
+    <option value="all">All</option>
+    <option value="11">11 Expert</option>
+    <option value="12">12 Expert</option>
+  </select>
+  <label style="margin-left:8px">Sort by</label>
+  <select id="sortFilter">
+    <option value="gsd1Fin" selected>GSNats D1 finish</option>
+    <option value="gsd1Rank">GSNats D1 rank</option>
+    <option value="gsd2Fin">GSNats D2 finish</option>
+    <option value="gsd2Rank">GSNats D2 rank</option>
+    <option value="sc30">So Cal 30ft</option>
+    <option value="scFin">So Cal finish</option>
+    <option value="scRank">So Cal rank</option>
+    <option value="lsHill">Lonestar hill</option>
+    <option value="lsFin">Lonestar finish</option>
+    <option value="lsRank">Lonestar rank</option>
+    <option value="gnwFin">GNW finish</option>
+    <option value="gnwRank">GNW rank</option>
+    <option value="pal30">PAL 30ft</option>
+    <option value="palFin">PAL finish</option>
+    <option value="name">Name</option>
+    <option value="moto">Moto #</option>
+  </select>
+</div>
+<div class="legend">
+  <span class="legend-item"><span class="swatch" style="background:var(--bar-gsd1)"></span>GSNats Day 1</span>
+  <span class="legend-item"><span class="swatch" style="background:#0e7490"></span>GSNats Day 2</span>
+  <span class="legend-item"><span class="swatch" style="background:var(--bar-sc)"></span>So Cal Day 2</span>
+  <span class="legend-item"><span class="swatch" style="background:var(--bar-ls)"></span>Lonestar Day 2</span>
+  <span class="legend-item"><span class="swatch" style="background:var(--bar-gnw)"></span>GNW Day 2</span>
+  <span class="legend-item"><span class="swatch" style="background:var(--bar-pal)"></span>PAL May</span>
+  <span class="legend-note">· Times in seconds · — = no data · Click column headers to sort</span>
+</div>
+<div class="table-wrap"><table id="mainTable"></table></div>
+<div class="footnote">* GNW Day 2 shows best finish only (no hill/corner split in source). Gates = moto gate draw (1st / 2nd). GSNats D1/D2 = best finish from moto rounds each day.</div>
+<script>
+const R=[
+  // 11 Expert — GSNats participants
+  {n:"Josh Linares",       a:11,ref:0,mo:[{m:144,p1:5,p2:1}],             g1r:1, g1f:37.335,g2r:2, g2f:37.706,sr:3, s30:1.922,sc:5.655,sf:29.341,lr:null,lh:null, lc:null, lf:null,  gr:1,   gf:26.403,pr:null,p30:null, pc:null,  pf:null},
+  {n:"Chayse Eckl",        a:11,ref:0,mo:[{m:145,p1:8,p2:4},{m:146,p1:6,p2:2}],g1r:3,g1f:38.504,g2r:3,g2f:38.349,sr:2,s30:1.926,sc:5.722,sf:29.317,lr:null,lh:null,lc:null,lf:null,gr:null,gf:null,pr:null,p30:null,pc:null,pf:null},
+  {n:"Matthew Tayamen",    a:11,ref:0,mo:[{m:144,p1:8,p2:4}],             g1r:2, g1f:38.960,g2r:1, g2f:37.650,sr:5, s30:1.928,sc:5.750,sf:30.179,lr:9,   lh:3.579,lc:8.950, lf:43.446,gr:2,   gf:27.029,pr:2,   p30:1.838,pc:14.458,pf:null},
+  {n:"Dylan Myers",        a:11,ref:0,mo:[{m:144,p1:4,p2:8}],             g1r:5, g1f:38.995,g2r:7, g2f:39.004,sr:6, s30:1.995,sc:5.916,sf:30.198,lr:4,   lh:3.505,lc:8.651, lf:42.579,gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Jacob Colwell",      a:11,ref:0,mo:[{m:146,p1:7,p2:3}],             g1r:4, g1f:39.164,g2r:5, g2f:39.625,sr:10,s30:2.000,sc:5.912,sf:30.790,lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Jaiye Lau",          a:11,ref:0,mo:[{m:144,p1:1,p2:5}],             g1r:8, g1f:39.433,g2r:6, g2f:39.741,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Kayden Polino",      a:11,ref:0,mo:[{m:146,p1:2,p2:6}],             g1r:7, g1f:39.945,g2r:4, g2f:39.318,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:4,   gf:27.652,pr:null,p30:null, pc:null,  pf:null},
+  {n:"Sebastian Rodriguez",a:11,ref:0,mo:[{m:146,p1:4,p2:8}],             g1r:6, g1f:40.006,g2r:8, g2f:39.778,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:5,   gf:28.469,pr:1,   p30:1.877,pc:14.866,pf:63.819},
+  {n:"Cole Schroeder",     a:11,ref:0,mo:[{m:145,p1:2,p2:6}],             g1r:9, g1f:40.182,g2r:10,g2f:40.688,sr:null,s30:null,sc:null,sf:null,  lr:12,  lh:3.607,lc:8.888, lf:44.913,gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Cooper Fuller",      a:11,ref:0,mo:[{m:144,p1:6,p2:2}],             g1r:14,g1f:40.475,g2r:9, g2f:39.759,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:3,   gf:28.032,pr:null,p30:null, pc:null,  pf:null},
+  {n:"Jett Kuettel",       a:11,ref:0,mo:[{m:145,p1:1,p2:5}],             g1r:11,g1f:41.346,g2r:14,g2f:42.451,sr:null,s30:null,sc:null,sf:null,  lr:21,  lh:3.693,lc:9.278, lf:46.038,gr:17,  gf:29.701,pr:null,p30:null, pc:null,  pf:null},
+  {n:"Jayson Stubbs",      a:11,ref:0,mo:[{m:145,p1:5,p2:1}],             g1r:10,g1f:41.781,g2r:17,g2f:42.082,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Jaxson Rizkovsky",   a:11,ref:0,mo:[{m:144,p1:3,p2:7}],             g1r:17,g1f:41.894,g2r:11,g2f:42.141,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Zachary Brown",      a:11,ref:0,mo:[{m:146,p1:3,p2:7}],             g1r:12,g1f:42.018,g2r:15,g2f:41.473,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Nathaniel Corralez", a:11,ref:0,mo:[{m:144,p1:7,p2:3}],             g1r:19,g1f:42.822,g2r:19,g2f:42.616,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Dylan Webb",         a:11,ref:0,mo:[{m:145,p1:7,p2:3}],             g1r:13,g1f:43.027,g2r:16,g2f:42.820,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Keegan Rowe",        a:11,ref:0,mo:[{m:145,p1:3,p2:7}],             g1r:16,g1f:45.342,g2r:12,g2f:44.207,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Jase Roth",          a:11,ref:0,mo:[{m:146,p1:6,p2:2}],             g1r:15,g1f:46.428,g2r:18,g2f:53.004,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:20,  gf:33.708,pr:null,p30:null, pc:null,  pf:null},
+  {n:"Ryker Robinson",     a:11,ref:0,mo:[{m:146,p1:5,p2:1}],             g1r:18,g1f:46.970,g2r:null,g2f:null, sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Jax Ruch",           a:11,ref:0,mo:[],                               g1r:null,g1f:null,g2r:13,g2f:45.554,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  // 12 Expert — GSNats participants
+  {n:"Trenton Paxman",     a:12,ref:0,mo:[{m:148,p1:3,p2:7}],             g1r:1, g1f:36.840,g2r:1, g2f:37.264,sr:1, s30:1.882,sc:5.493,sf:28.170,lr:null,lh:null, lc:null, lf:null,  gr:1,   gf:25.978,pr:null,p30:null, pc:null,  pf:null},
+  {n:"Grayson Novak",      a:12,ref:0,mo:[{m:149,p1:6,p2:2}],             g1r:3, g1f:37.560,g2r:3, g2f:37.731,sr:3, s30:1.935,sc:5.625,sf:29.224,lr:8,   lh:3.397,lc:8.346, lf:42.312,gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Gus Cruz",           a:12,ref:0,mo:[{m:150,p1:7,p2:3}],             g1r:6, g1f:37.826,g2r:5, g2f:38.875,sr:5, s30:1.960,sc:5.685,sf:29.999,lr:null,lh:null, lc:null, lf:null,  gr:4,   gf:27.369,pr:null,p30:null, pc:null,  pf:null},
+  {n:"Tristan Miyake",     a:12,ref:0,mo:[{m:150,p1:8,p2:4}],             g1r:5, g1f:37.964,g2r:6, g2f:37.925,sr:4, s30:1.977,sc:5.650,sf:29.447,lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Jhoel Quinto Guzman",a:12,ref:0,mo:[{m:148,p1:5,p2:1}],             g1r:2, g1f:38.321,g2r:2, g2f:37.997,sr:1, s30:1.934,sc:5.592,sf:28.759,lr:null,lh:null, lc:null, lf:null,  gr:2,   gf:26.974,pr:null,p30:null, pc:null,  pf:null},
+  {n:"Barrett Macias",     a:12,ref:0,mo:[{m:149,p1:4,p2:8}],             g1r:4, g1f:38.665,g2r:14,g2f:39.205,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:3,   gf:27.216,pr:null,p30:null, pc:null,  pf:null},
+  {n:"Colin Wooten",       a:12,ref:0,mo:[{m:147,p1:6,p2:2}],             g1r:7, g1f:38.891,g2r:8, g2f:39.104,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Alexander Martin",   a:12,ref:0,mo:[{m:147,p1:3,p2:7}],             g1r:8, g1f:39.307,g2r:4, g2f:38.955,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Westin Binford",     a:12,ref:0,mo:[{m:149,p1:2,p2:6}],             g1r:9, g1f:40.089,g2r:7, g2f:39.498,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Maddox Mcgonigle",   a:12,ref:0,mo:[{m:147,p1:7,p2:3}],             g1r:11,g1f:40.407,g2r:11,g2f:40.097,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Axel Shanks",        a:12,ref:0,mo:[{m:147,p1:8,p2:4}],             g1r:10,g1f:41.647,g2r:16,g2f:42.259,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Jack Marshall",      a:12,ref:0,mo:[{m:150,p1:1,p2:5}],             g1r:13,g1f:41.876,g2r:9, g2f:41.254,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Achilles Bell",      a:12,ref:0,mo:[{m:149,p1:8,p2:4}],             g1r:15,g1f:41.905,g2r:10,g2f:41.371,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Christian Zapata",   a:12,ref:0,mo:[{m:150,p1:3,p2:7}],             g1r:12,g1f:42.149,g2r:20,g2f:46.374,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Peyton Dorris",      a:12,ref:0,mo:[{m:147,p1:5,p2:1}],             g1r:17,g1f:42.736,g2r:17,g2f:41.725,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Logan Mieszala",     a:12,ref:0,mo:[{m:148,p1:2,p2:6}],             g1r:16,g1f:42.971,g2r:13,g2f:42.339,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Derek Hortt",        a:12,ref:0,mo:[{m:148,p1:4,p2:8}],             g1r:14,g1f:44.006,g2r:15,g2f:43.335,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:18,  gf:30.268,pr:null,p30:null, pc:null,  pf:null},
+  {n:"Kaiden Saba",        a:12,ref:0,mo:[{m:147,p1:1,p2:5}],             g1r:21,g1f:44.969,g2r:18,g2f:44.225,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Kingston Simmons",   a:12,ref:0,mo:[{m:148,p1:7,p2:3}],             g1r:18,g1f:45.619,g2r:null,g2f:null, sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Max Singleton",      a:12,ref:0,mo:[{m:150,p1:5,p2:1}],             g1r:19,g1f:46.899,g2r:12,g2f:43.728,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:null, gf:null,  pr:null,p30:null, pc:null,  pf:null},
+  {n:"Montana Mcgraw",     a:12,ref:0,mo:[{m:149,p1:1,p2:5}],             g1r:20,g1f:46.932,g2r:19,g2f:44.985,sr:null,s30:null,sc:null,sf:null,  lr:null,lh:null, lc:null, lf:null,  gr:24,  gf:31.443,pr:null,p30:null, pc:null,  pf:null},
+  // Reference riders
+  {n:"Ray Sode",           a:12,ref:1,mo:[],g1r:null,g1f:null,g2r:null,g2f:null,sr:9,s30:2.072,sc:6.062,sf:30.539,lr:null,lh:null,lc:null,lf:null,gr:null,gf:null,pr:1,p30:1.940,pc:14.567,pf:null},
+  // So Cal Day 2 reference riders (not at GSNats)
+  {n:"Heston Novotny",     a:11,ref:1,mo:[],g1r:null,g1f:null,g2r:null,g2f:null,sr:4, s30:1.968,sc:5.879,sf:30.074,lr:null,lh:null,lc:null,lf:null,gr:null,gf:null,pr:null,p30:null,pc:null,pf:null},
+  {n:"Kaelan Schioldan",   a:11,ref:1,mo:[],g1r:null,g1f:null,g2r:null,g2f:null,sr:7, s30:2.020,sc:5.905,sf:30.458,lr:null,lh:null,lc:null,lf:null,gr:null,gf:null,pr:null,p30:null,pc:null,pf:null},
+  {n:"Memphis Day",        a:11,ref:1,mo:[],g1r:null,g1f:null,g2r:null,g2f:null,sr:8, s30:2.064,sc:6.076,sf:30.643,lr:null,lh:null,lc:null,lf:null,gr:null,gf:null,pr:null,p30:null,pc:null,pf:null},
+  {n:"Jameson Taylor",     a:11,ref:1,mo:[],g1r:null,g1f:null,g2r:null,g2f:null,sr:9, s30:1.977,sc:5.798,sf:30.646,lr:null,lh:null,lc:null,lf:null,gr:null,gf:null,pr:null,p30:null,pc:null,pf:null},
+  {n:"Pierce Collingwood", a:12,ref:1,mo:[],g1r:null,g1f:null,g2r:null,g2f:null,sr:2, s30:1.883,sc:5.646,sf:29.099,lr:null,lh:null,lc:null,lf:null,gr:null,gf:null,pr:null,p30:null,pc:null,pf:null},
+  {n:"Lucas Walker",       a:12,ref:1,mo:[],g1r:null,g1f:null,g2r:null,g2f:null,sr:6, s30:2.014,sc:5.959,sf:30.142,lr:null,lh:null,lc:null,lf:null,gr:null,gf:null,pr:null,p30:null,pc:null,pf:null},
+  {n:"Jaxon Woods",        a:12,ref:1,mo:[],g1r:null,g1f:null,g2r:null,g2f:null,sr:7, s30:1.939,sc:5.775,sf:30.214,lr:null,lh:null,lc:null,lf:null,gr:null,gf:null,pr:null,p30:null,pc:null,pf:null},
+  {n:"Jacob Linares",      a:12,ref:1,mo:[],g1r:null,g1f:null,g2r:null,g2f:null,sr:8, s30:2.000,sc:5.838,sf:30.489,lr:null,lh:null,lc:null,lf:null,gr:null,gf:null,pr:null,p30:null,pc:null,pf:null},
+  {n:"John Kerr",          a:12,ref:1,mo:[],g1r:null,g1f:null,g2r:null,g2f:null,sr:10,s30:1.992,sc:5.966,sf:30.572,lr:null,lh:null,lc:null,lf:null,gr:null,gf:null,pr:null,p30:null,pc:null,pf:null},
+];
+
+function rng(arr){const v=arr.filter(x=>x!==null);return v.length?[Math.min(...v),Math.max(...v)]:[0,1];}
+const [mnG11,mxG11]=rng(R.filter(r=>r.a===11&&!r.ref).map(r=>r.g1f));
+const [mnG12,mxG12]=rng(R.filter(r=>r.a===12&&!r.ref).map(r=>r.g1f));
+const [mn2G11,mx2G11]=rng(R.filter(r=>r.a===11&&!r.ref).map(r=>r.g2f));
+const [mn2G12,mx2G12]=rng(R.filter(r=>r.a===12&&!r.ref).map(r=>r.g2f));
+const [mnS11,mxS11]=rng(R.filter(r=>r.a===11).map(r=>r.sf));
+const [mnS12,mxS12]=rng(R.filter(r=>r.a===12).map(r=>r.sf));
+const [mnL11,mxL11]=rng(R.filter(r=>r.a===11).map(r=>r.lf));
+const [mnL12,mxL12]=rng(R.filter(r=>r.a===12).map(r=>r.lf));
+const [mnW11,mxW11]=rng(R.filter(r=>r.a===11).map(r=>r.gf));
+const [mnW12,mxW12]=rng(R.filter(r=>r.a===12).map(r=>r.gf));
+const [mnP,mxP]=rng(R.map(r=>r.pf));
+
+// Matthew Tayamen's times across events — used as extrapolation base for Ray
+const matt=R.find(r=>r.n==='Matthew Tayamen');
+// Ray's deltas vs Matthew at So Cal: +7.5% @ 30ft, +5.4% @ corner, +1.2% @ finish
+const D30=1.075, DC=1.054, DF=1.012;
+// Estimated Ray times derived from Matthew's times at each event
+const rayEst={
+  g1f: matt.g1f!==null ? matt.g1f*DF : null,
+  g2f: matt.g2f!==null ? matt.g2f*DF : null,
+  lh:  matt.lh!==null  ? matt.lh*D30  : null,
+  lc:  matt.lc!==null  ? matt.lc*DC   : null,
+  lf:  matt.lf!==null  ? matt.lf*DF   : null,
+  gf:  matt.gf!==null  ? matt.gf*DF   : null,
+};
+
+function bw(v,mn,mx,W=26){if(v===null||mn===mx)return 0;return Math.round(W*((mx-v+0.2)/(mx-mn+0.4)));}
+const na=()=>'<span class="time-na">—</span>';
+const dlt=(v,ref,isRef,color='#c0392b')=>{if(isRef||v===null||ref===null)return '';const d=v-ref;const sign=d<0?'':'+';const pct=((ref-v)/v*100);const psign=pct<0?'':'+';return `<span class="delta" style="color:${color}">(${sign}${d.toFixed(3)} / ${psign}${pct.toFixed(1)}%)</span>`;};
+const fmt=(v,ref=null,isRef=false,color='#c0392b')=>v===null?na():`<span class="time">${v.toFixed(3)}</span>${dlt(v,ref,isRef,color)}`;
+const bar=(v,mn,mx,col,cls,ref=null,isRef=false,color='#c0392b')=>v===null?na():`<div class="bar-cell"><span class="seg-bar" style="width:${bw(v,mn,mx)}px;background:${col}"></span><span class="${cls}">${v.toFixed(3)}</span>${dlt(v,ref,isRef,color)}</div>`;
+const fmtEst=v=>v===null?na():`<span style="font-family:var(--mono);font-size:11px;color:#555;font-style:italic">~${v.toFixed(3)}</span>`;
+const barEst=(v,mn,mx,col)=>v===null?na():`<div class="bar-cell"><span class="seg-bar" style="width:${bw(v,mn,mx)}px;background:${col};opacity:0.4"></span><span style="font-family:var(--mono);font-size:11px;color:#555;font-style:italic">~${v.toFixed(3)}</span></div>`;
+const rnk=v=>v===null?na():`<span class="rank-val">#${v}</span>`;
+const ray=R.find(r=>r.ref);
+
+let sk='g1f',sd=1;
+
+function sorted(data){
+  const estKeys={g1f:'g1f',g2f:'g2f',lh:'lh',lf:'lf',gf:'gf'};
+  return [...data].sort((a,b)=>{
+    if(sk==='name')return sd*a.n.localeCompare(b.n);
+    if(sk==='moto'){return sd*((a.mo.length?a.mo[0].m:9999)-(b.mo.length?b.mo[0].m:9999));}
+    const map={g1f:'g1f',g1r:'g1r',gsd1Fin:'g1f',gsd1Rank:'g1r',g2f:'g2f',g2r:'g2r',gsd2Fin:'g2f',gsd2Rank:'g2r',sc30:'s30',scFin:'sf',scRank:'sr',lsHill:'lh',lsFin:'lf',lsRank:'lr',gnwFin:'gf',gnwRank:'gr',pal30:'p30',palFin:'pf',palRank:'pr'};
+    const k=map[sk]||sk;
+    const getV=r=>{
+      const v=r[k];
+      if(v===null && r.n==='Ray Sode' && estKeys[k]!==undefined) return rayEst[estKeys[k]];
+      return v;
+    };
+    const av=getV(a),bv=getV(b);
+    if(av===null&&bv===null)return 0;
+    if(av===null)return 1;if(bv===null)return -1;
+    return sd*(av-bv);
+  });
+}
+
+function thH(key,label,div){
+  const active=sk===key;
+  const dir=active?(sd===1?' ↑':' ↓'):'';
+  return `<th class="${div?'div-l':''} ${active?'active-sort':''}" data-key="${key}">${label}${dir}</th>`;
+}
+
+function render(){
+  const cls=document.getElementById('classFilter').value;
+  sk=document.getElementById('sortFilter').value;
+  let data=R.filter(r=>cls==='all'||String(r.a)===cls||r.n==='Ray Sode');
+  data=sorted(data);
+
+  const grp=`<tr class="grp-row">
+    <th colspan="4"></th>
+    <th colspan="2" class="div-l" style="color:var(--bar-gsd1)">GSNats Day 1</th>
+    <th colspan="2" class="div-l" style="color:#0e7490">GSNats Day 2</th>
+    <th colspan="4" class="div-l" style="color:var(--bar-sc)">So Cal Day 2</th>
+    <th colspan="3" class="div-l" style="color:var(--bar-ls)">Lonestar Day 2</th>
+    <th colspan="2" class="div-l" style="color:var(--bar-gnw)">GNW Day 2 *</th>
+    <th colspan="4" class="div-l" style="color:var(--bar-pal)">PAL May</th>
+  </tr>`;
+  const col=`<tr class="col-row">
+    ${thH('name','Rider',0)}
+    <th data-key="">Age</th><th data-key="">Moto(s)</th><th data-key="">Gates</th>
+    ${thH('gsd1Fin','Finish',1)}${thH('gsd1Rank','Rank',0)}
+    ${thH('gsd2Fin','Finish',1)}${thH('gsd2Rank','Rank',0)}
+    ${thH('sc30','30ft',1)}${thH('scFin','Corner',0)}${thH('scFin','Finish',0)}${thH('scRank','Rank',0)}
+    ${thH('lsHill','Hill',1)}${thH('lsFin','Finish',0)}${thH('lsRank','Rank',0)}
+    ${thH('gnwFin','Finish',1)}${thH('gnwRank','Rank',0)}
+    ${thH('pal30','30ft',1)}${thH('palFin','Corner',0)}${thH('palFin','Finish',0)}${thH('palRank','Rank',0)}
+  </tr>`;
+
+  let rows='';
+  for(const r of data){
+    const isRay=r.n==='Ray Sode';
+    const isMatt=r.n==='Matthew Tayamen';
+    const mStr=r.mo.length?r.mo.map(m=>`<span class="moto-tag">#${m.m}</span>`).join(''):`<span class="time-na">—</span>`;
+    const gStr=r.mo.length?r.mo.map(m=>`${m.p1}/${m.p2}`).join(' · '):`<span class="time-na">—</span>`;
+    const ab=r.ref?`<span class="badge b-ref" style="${!isRay?'background:#f0f7e6;border-color:#b7dfb0;color:#2d6a2d':''}">${r.a}x</span>`:r.a===11?`<span class="badge b-11">11x</span>`:`<span class="badge b-12">12x</span>`;
+    const nm=r.ref?`${r.n}<span class="ref-tag">ref</span>`:r.n;
+    const [mG,xG]=r.a===11?[mnG11,mxG11]:[mnG12,mxG12];
+    const [m2G,x2G]=r.a===11?[mn2G11,mx2G11]:[mn2G12,mx2G12];
+    const [mS,xS]=r.a===11?[mnS11,mxS11]:[mnS12,mxS12];
+    const [mL,xL]=r.a===11?[mnL11,mxL11]:[mnL12,mxL12];
+    const [mW,xW]=r.a===11?[mnW11,mxW11]:[mnW12,mxW12];
+    rows+=`<tr class="${isRay?'ref-row':''}">
+      <td class="name-cell">${nm}</td><td>${ab}</td><td>${mStr}</td><td class="gates-cell">${gStr}</td>
+      <td class="div-l">${isRay?barEst(rayEst.g1f,mG,xG,'var(--bar-gsd1)'):bar(r.g1f,mG,xG,'var(--bar-gsd1)','time-teal')}</td><td>${rnk(r.g1r)}</td>
+      <td class="div-l">${isRay?barEst(rayEst.g2f,m2G,x2G,'#0e7490'):bar(r.g2f,m2G,x2G,'#0e7490','time-teal')}</td><td>${rnk(r.g2r)}</td>
+      <td class="div-l">${fmt(r.s30,ray.s30,isRay,isMatt?'#7c3aed':'#c0392b')}</td><td>${fmt(r.sc,ray.sc,isRay,isMatt?'#7c3aed':'#c0392b')}</td><td>${bar(r.sf,mS,xS,'var(--bar-sc)','time-good',ray.sf,isRay,isMatt?'#7c3aed':'#c0392b')}</td><td>${rnk(r.sr)}</td>
+      <td class="div-l">${isRay?fmtEst(rayEst.lh):fmt(r.lh)}</td><td>${isRay?barEst(rayEst.lf,mL,xL,'var(--bar-ls)'):bar(r.lf,mL,xL,'var(--bar-ls)','time-good')}</td><td>${rnk(r.lr)}</td>
+      <td class="div-l">${isRay?barEst(rayEst.gf,mW,xW,'var(--bar-gnw)'):bar(r.gf,mW,xW,'var(--bar-gnw)','time-good')}</td><td>${rnk(r.gr)}</td>
+      <td class="div-l">${fmt(r.p30,ray.p30,isRay)}</td><td>${fmt(r.pc,ray.pc,isRay)}</td><td>${bar(r.pf,mnP,mxP,'var(--bar-pal)','time-good',ray.pf,isRay)}</td><td>${rnk(r.pr)}</td>
+    </tr>`;
+  }
+  document.getElementById('mainTable').innerHTML=`<thead>${grp}${col}</thead><tbody>${rows}</tbody>`;
+  document.querySelectorAll('th[data-key]').forEach(th=>{
+    th.addEventListener('click',()=>{
+      const k=th.dataset.key;if(!k)return;
+      if(sk===k){sd*=-1;}else{sk=k;sd=1;}
+      document.getElementById('sortFilter').value=k;
+      render();
+    });
+  });
+}
+document.getElementById('classFilter').addEventListener('change',render);
+document.getElementById('sortFilter').addEventListener('change',()=>{sd=1;render();});
+render();
+</script>
+</body>
+</html>
