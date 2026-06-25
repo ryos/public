@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Ray's Race Result Estimator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;
+  --surface:#161b22;
+  --surface2:#1c2330;
+  --surface3:#21262d;
+  --border:#30363d;
+  --border-bright:#484f58;
+  --text:#e6edf3;
+  --text-2:#8b949e;
+  --text-3:#484f58;
+  --ray:#f0f7e6;
+  --ray-bg:#1a2e1a;
+  --ray-border:#2d5a2d;
+  --ray-text:#7ee787;
+  --blue:#58a6ff;
+  --blue-dim:#1f3a5f;
+  --amber:#e3b341;
+  --amber-dim:#3d2e0a;
+  --red:#f85149;
+  --red-dim:#3d0f0a;
+  --purple:#bc8cff;
+  --purple-dim:#2d1b69;
+  --teal:#39d0d0;
+  --teal-dim:#0d2d2d;
+  --green:#7ee787;
+  --green-dim:#122416;
+  --badge-11:#1f3a5f;
+  --badge-12:#3d2e0a;
+  --font:'Space Grotesk',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.6}
+
+/* Header */
+.header{
+  background:linear-gradient(135deg,#0d1117 0%,#161b22 100%);
+  border-bottom:1px solid var(--border);
+  padding:2rem 2rem 1.5rem;
+  position:relative;
+  overflow:hidden;
+}
+.header::before{
+  content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;
+  background:radial-gradient(circle,rgba(126,231,135,0.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.header-inner{max-width:1400px;margin:0 auto}
+.header h1{
+  font-size:1.5rem;font-weight:600;letter-spacing:-0.02em;
+  display:flex;align-items:center;gap:10px;
+}
+.header h1 .pill{
+  font-size:10px;font-family:var(--mono);font-weight:500;
+  background:var(--ray-bg);color:var(--ray-text);border:1px solid var(--ray-border);
+  padding:2px 8px;border-radius:20px;letter-spacing:0.05em;text-transform:uppercase;
+}
+.header p{font-size:13px;color:var(--text-2);margin-top:4px}
+
+/* Controls bar */
+.controls-bar{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:1rem 2rem;
+  position:sticky;top:0;z-index:10;
+}
+.controls-inner{
+  max-width:1400px;margin:0 auto;
+  display:flex;gap:1.5rem;align-items:flex-end;flex-wrap:wrap;
+}
+.control-group{display:flex;flex-direction:column;gap:4px}
+.control-group label{
+  font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--text-3);font-family:var(--mono);
+}
+select{
+  font-family:var(--font);font-size:13px;
+  background:var(--surface2);color:var(--text);
+  border:1px solid var(--border);border-radius:6px;
+  padding:6px 32px 6px 10px;height:34px;cursor:pointer;
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;
+  transition:border-color 0.15s;min-width:200px;
+}
+select:hover{border-color:var(--border-bright)}
+select:focus{outline:none;border-color:var(--blue)}
+
+.sort-group{margin-left:auto}
+
+/* Info bar */
+.info-bar{
+  max-width:1400px;margin:0 auto;
+  padding:0.75rem 2rem;
+  display:flex;gap:1.5rem;flex-wrap:wrap;align-items:center;
+}
+.info-chip{
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;font-family:var(--mono);color:var(--text-2);
+}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.est-note{
+  font-size:11px;font-family:var(--mono);color:var(--text-3);
+  margin-left:auto;
+}
+
+/* Main content */
+.main{max-width:1400px;margin:0 auto;padding:0 2rem 3rem}
+
+/* Stats cards */
+.stat-cards{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:12px;margin-bottom:1.5rem;
+}
+.stat-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  padding:14px 16px;
+}
+.stat-card .label{
+  font-size:10px;font-family:var(--mono);letter-spacing:0.06em;
+  text-transform:uppercase;color:var(--text-3);margin-bottom:4px;
+}
+.stat-card .value{
+  font-size:1.4rem;font-weight:600;letter-spacing:-0.02em;font-family:var(--mono);
+}
+.stat-card .sub{font-size:11px;color:var(--text-2);margin-top:2px}
+.val-ray{color:var(--ray-text)}
+.val-blue{color:var(--blue)}
+.val-amber{color:var(--amber)}
+.val-purple{color:var(--purple)}
+
+/* Delta summary */
+.delta-summary{
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  padding:14px 16px;margin-bottom:1.5rem;
+  display:flex;align-items:center;gap:2rem;flex-wrap:wrap;
+}
+.delta-summary .ds-label{
+  font-size:11px;font-family:var(--mono);letter-spacing:0.06em;
+  text-transform:uppercase;color:var(--text-3);margin-right:4px;
+}
+.delta-summary .ds-val{
+  font-family:var(--mono);font-size:12px;
+}
+.ds-item{display:flex;align-items:center;gap:4px}
+.ds-divider{width:1px;height:20px;background:var(--border);flex-shrink:0}
+
+/* Table */
+.table-wrap{
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  overflow:hidden;
+  box-shadow:0 4px 24px rgba(0,0,0,0.3);
+}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead th{
+  font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;
+  font-family:var(--mono);color:var(--text-3);text-align:left;
+  padding:8px 10px;
+  border-bottom:1px solid var(--border);
+  background:var(--surface2);
+  cursor:pointer;user-select:none;white-space:nowrap;
+  transition:color 0.15s,background 0.15s;
+}
+thead th:hover{color:var(--text-2);background:var(--surface3)}
+thead th.active{color:var(--blue)}
+thead th.grp{
+  font-size:9px;letter-spacing:0.08em;padding:5px 10px;
+  border-bottom:none;background:var(--surface3);
+  cursor:default;
+}
+thead th.grp:hover{background:var(--surface3);color:var(--text-3)}
+tbody tr{border-bottom:1px solid var(--border);transition:background 0.1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:rgba(255,255,255,0.02)}
+tbody tr.ray-row{background:var(--ray-bg)}
+tbody tr.ray-row:hover{background:#1f3520}
+tbody td{padding:8px 10px;vertical-align:middle}
+.div-l{border-left:1px solid var(--border)}
+.name-cell{font-weight:500;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.badge{
+  font-size:9px;font-weight:600;font-family:var(--mono);padding:1px 6px;
+  border-radius:3px;white-space:nowrap;
+}
+.b-11{background:var(--badge-11);color:var(--blue);border:1px solid #2d4a7a}
+.b-12{background:var(--badge-12);color:var(--amber);border:1px solid #5a4015}
+.b-ray{background:var(--ray-bg);color:var(--ray-text);border:1px solid var(--ray-border)}
+.t{font-family:var(--mono);font-size:11px;color:var(--text)}
+.t-good{font-family:var(--mono);font-size:11px;color:var(--green)}
+.t-est{font-family:var(--mono);font-size:11px;color:var(--text-2);font-style:italic}
+.t-ray{font-family:var(--mono);font-size:11px;color:var(--ray-text)}
+.t-na{font-family:var(--mono);font-size:11px;color:var(--text-3)}
+.delta{font-family:var(--mono);font-size:10px;margin-left:3px}
+.d-red{color:var(--red)}
+.d-green{color:var(--green)}
+.rank-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:10px;font-weight:500;
+  min-width:22px;height:18px;padding:0 4px;
+  border-radius:3px;
+  background:var(--surface3);color:var(--text-2);
+  border:1px solid var(--border);
+}
+.rank-badge.top3{background:var(--amber-dim);color:var(--amber);border-color:#5a4015}
+.rank-badge.ray-rank{background:var(--ray-bg);color:var(--ray-text);border-color:var(--ray-border)}
+.bar-wrap{display:flex;align-items:center;gap:5px}
+.mini-bar{height:4px;border-radius:2px;flex-shrink:0}
+.no-data{
+  text-align:center;padding:3rem 2rem;
+  color:var(--text-3);font-family:var(--mono);font-size:13px;
+}
+
+/* Age filter buttons */
+.age-filter{display:flex;gap:6px;align-items:center}
+.age-btn{
+  font-family:var(--mono);font-size:11px;font-weight:600;
+  padding:5px 12px;height:34px;border-radius:6px;border:1px solid var(--border);
+  background:var(--surface2);color:var(--text-2);cursor:pointer;
+  transition:all 0.15s;white-space:nowrap;
+  -webkit-tap-highlight-color:transparent;
+}
+.age-btn:hover{border-color:var(--border-bright);color:var(--text)}
+.age-btn.active-all{background:#1c2e3d;border-color:var(--blue);color:var(--blue)}
+.age-btn.active-11{background:var(--badge-11);border-color:#2d4a7a;color:var(--blue)}
+.age-btn.active-12{background:var(--amber-dim);border-color:#5a4015;color:var(--amber)}
+
+/* Mobile responsive */
+@media(max-width:640px){
+  .header{padding:1rem 1rem 0.75rem;padding-top:calc(1rem + env(safe-area-inset-top))}
+  .header h1{font-size:1.1rem;flex-wrap:wrap;gap:6px}
+  .header p{font-size:11px}
+  .controls-bar{padding:0.75rem 1rem;position:sticky;top:0}
+  .controls-inner{gap:0.75rem;flex-direction:column;align-items:stretch}
+  .control-group{width:100%}
+  .control-group.sort-group{margin-left:0}
+  select{min-width:0;width:100%;font-size:16px;height:40px} /* 16px prevents iOS zoom */
+  .age-filter{width:100%}
+  .age-btn{flex:1;text-align:center;height:40px;font-size:12px}
+  .info-bar{padding:0.5rem 1rem;gap:0.75rem}
+  .main{padding:0 1rem 5rem}
+  .stat-cards{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:1rem}
+  .stat-card{padding:10px 12px}
+  .stat-card .value{font-size:1.1rem}
+  .delta-summary{padding:10px 12px;gap:0.75rem;flex-direction:column;align-items:flex-start}
+  .ds-divider{display:none}
+  .table-wrap{border-radius:8px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table{font-size:11px;min-width:480px}
+  thead th{padding:7px 8px;font-size:8px}
+  tbody td{padding:8px 8px}
+  .name-cell{font-size:12px;min-width:100px}
+  .rank-badge{min-width:20px;height:16px;font-size:9px}
+  .badge{font-size:8px;padding:1px 4px}
+  .no-data{font-size:12px;padding:2rem 1rem}
+  /* Sticky rank column on mobile */
+  table thead th:first-child,
+  table tbody td:first-child{
+    position:sticky;left:0;background:var(--surface2);z-index:1;
+  }
+  table tbody tr.ray-row td:first-child{background:var(--ray-bg)}
+  table tbody tr:hover td:first-child{background:var(--surface3)}
+}
+@media(max-width:380px){
+  .header h1{font-size:1rem}
+  .stat-cards{grid-template-columns:1fr 1fr}
+}</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <h1>Ray's Race Result Estimator <span class="pill">Beta</span></h1>
+    <p>Select an event and a So Cal Day 2 reference rider to estimate Ray Sode's time and rank</p>
+  </div>
+</div>
+
+<div class="controls-bar">
+  <div class="controls-inner">
+    <div class="control-group">
+      <label>Event</label>
+      <select id="eventSelect">
+        <option value="">— select event —</option>
+        <option value="gsd1">GSNats Day 1</option>
+        <option value="gsd2">GSNats Day 2</option>
+        <option value="sc">So Cal Day 2 ★ Ray was here</option>
+        <option value="ls">Lonestar Day 2</option>
+        <option value="gnw">GNW Day 2</option>
+        <option value="pal">PAL May ★ Ray was here</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label>Reference Rider (So Cal Day 2)</label>
+      <select id="refSelect">
+        <option value="ray">— use Ray's own So Cal times —</option>
+      </select>
+    </div>
+    <div class="control-group sort-group">
+      <label>Sort by</label>
+      <select id="sortSelect">
+        <option value="finish">Finish time</option>
+        <option value="rank">Rank</option>
+        <option value="name">Name</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label>Age class</label>
+      <div class="age-filter">
+        <button class="age-btn active-all" data-age="all">All</button>
+        <button class="age-btn" data-age="11">11x</button>
+        <button class="age-btn" data-age="12">12x</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="background:var(--bg)">
+  <div class="info-bar" id="infoBar"></div>
+</div>
+
+<div class="main">
+  <div class="stat-cards" id="statCards"></div>
+  <div class="delta-summary" id="deltaSummary" style="display:none"></div>
+  <div class="table-wrap" id="tableWrap"><div class="no-data">Select an event to begin</div></div>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+// Each rider has times per event. Segments vary by event:
+// gsd1/gsd2: finish only
+// sc/pal: s30, scor, fin
+// ls: hill, fin
+// gnw: fin
+
+const RIDERS = [
+  // name, age, ref(0=participant,1=comparison), socal_rank, sc_30, sc_cor, sc_fin, gsd1_fin, gsd2_fin, ls_hill, ls_fin, gnw_fin, pal_30, pal_cor, pal_fin
+  {n:"Josh Linares",       a:11, sc:{r:3,  t30:1.922,cor:5.655,fin:29.341}, gsd1:{fin:37.335}, gsd2:{fin:37.706}, ls:{hill:null,  fin:null},  gnw:{fin:26.403}, pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Chayse Eckl",        a:11, sc:{r:2,  t30:1.926,cor:5.722,fin:29.317}, gsd1:{fin:38.504}, gsd2:{fin:38.349}, ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Matthew Tayamen",    a:11, sc:{r:5,  t30:1.928,cor:5.750,fin:30.179}, gsd1:{fin:38.960}, gsd2:{fin:37.650}, ls:{hill:3.579, fin:43.446},gnw:{fin:27.029}, pal:{t30:1.838, cor:14.458, fin:null}},
+  {n:"Dylan Myers",        a:11, sc:{r:6,  t30:1.995,cor:5.916,fin:30.198}, gsd1:{fin:38.995}, gsd2:{fin:39.004}, ls:{hill:3.505, fin:42.579},gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Jacob Colwell",      a:11, sc:{r:10, t30:2.000,cor:5.912,fin:30.790}, gsd1:{fin:39.164}, gsd2:{fin:39.625}, ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Jaiye Lau",          a:11, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:39.433}, gsd2:{fin:39.741}, ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Kayden Polino",      a:11, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:39.945}, gsd2:{fin:39.318}, ls:{hill:null,  fin:null},  gnw:{fin:27.652}, pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Sebastian Rodriguez",a:11, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:40.006}, gsd2:{fin:39.778}, ls:{hill:null,  fin:null},  gnw:{fin:28.469}, pal:{t30:1.877, cor:14.866, fin:63.819}},
+  {n:"Cole Schroeder",     a:11, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:40.182}, gsd2:{fin:40.688}, ls:{hill:3.607, fin:44.913},gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Cooper Fuller",      a:11, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:40.475}, gsd2:{fin:39.759}, ls:{hill:null,  fin:null},  gnw:{fin:28.032}, pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Jett Kuettel",       a:11, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:41.346}, gsd2:{fin:42.451}, ls:{hill:3.693, fin:46.038},gnw:{fin:29.701}, pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Jayson Stubbs",      a:11, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:41.781}, gsd2:{fin:42.082}, ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Jaxson Rizkovsky",   a:11, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:41.894}, gsd2:{fin:42.141}, ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Zachary Brown",      a:11, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:42.018}, gsd2:{fin:41.473}, ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Nathaniel Corralez", a:11, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:42.822}, gsd2:{fin:42.616}, ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Dylan Webb",         a:11, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:43.027}, gsd2:{fin:42.820}, ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Keegan Rowe",        a:11, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:45.342}, gsd2:{fin:44.207}, ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Jase Roth",          a:11, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:46.428}, gsd2:{fin:53.004}, ls:{hill:null,  fin:null},  gnw:{fin:33.708}, pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Ryker Robinson",     a:11, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:46.970}, gsd2:{fin:null},   ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Jax Ruch",           a:11, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:null},   gsd2:{fin:45.554}, ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  // So Cal only 11x refs
+  {n:"Heston Novotny",     a:11, sc:{r:4,  t30:1.968,cor:5.879,fin:30.074},gsd1:{fin:null},   gsd2:{fin:null},   ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Kaelan Schioldan",   a:11, sc:{r:7,  t30:2.020,cor:5.905,fin:30.458},gsd1:{fin:null},   gsd2:{fin:null},   ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Memphis Day",        a:11, sc:{r:8,  t30:2.064,cor:6.076,fin:30.643},gsd1:{fin:null},   gsd2:{fin:null},   ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Jameson Taylor",     a:11, sc:{r:9,  t30:1.977,cor:5.798,fin:30.646},gsd1:{fin:null},   gsd2:{fin:null},   ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  // 12 Expert
+  {n:"Trenton Paxman",     a:12, sc:{r:1,  t30:1.882,cor:5.493,fin:28.170},gsd1:{fin:36.840}, gsd2:{fin:37.264}, ls:{hill:null,  fin:null},  gnw:{fin:25.978}, pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Grayson Novak",      a:12, sc:{r:3,  t30:1.935,cor:5.625,fin:29.224},gsd1:{fin:37.560}, gsd2:{fin:37.731}, ls:{hill:3.397, fin:42.312},gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Gus Cruz",           a:12, sc:{r:5,  t30:1.960,cor:5.685,fin:29.999},gsd1:{fin:37.826}, gsd2:{fin:38.875}, ls:{hill:null,  fin:null},  gnw:{fin:27.369}, pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Tristan Miyake",     a:12, sc:{r:4,  t30:1.977,cor:5.650,fin:29.447},gsd1:{fin:37.964}, gsd2:{fin:37.925}, ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Jhoel Quinto Guzman",a:12, sc:{r:1,  t30:1.934,cor:5.592,fin:28.759},gsd1:{fin:38.321}, gsd2:{fin:37.997}, ls:{hill:null,  fin:null},  gnw:{fin:26.974}, pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Barrett Macias",     a:12, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:38.665}, gsd2:{fin:39.205}, ls:{hill:null,  fin:null},  gnw:{fin:27.216}, pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Colin Wooten",       a:12, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:38.891}, gsd2:{fin:39.104}, ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Alexander Martin",   a:12, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:39.307}, gsd2:{fin:38.955}, ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Westin Binford",     a:12, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:40.089}, gsd2:{fin:39.498}, ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Maddox Mcgonigle",   a:12, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:40.407}, gsd2:{fin:40.097}, ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Axel Shanks",        a:12, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:41.647}, gsd2:{fin:42.259}, ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Jack Marshall",      a:12, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:41.876}, gsd2:{fin:41.254}, ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Achilles Bell",      a:12, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:41.905}, gsd2:{fin:41.371}, ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Christian Zapata",   a:12, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:42.149}, gsd2:{fin:46.374}, ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Peyton Dorris",      a:12, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:42.736}, gsd2:{fin:41.725}, ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Logan Mieszala",     a:12, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:42.971}, gsd2:{fin:42.339}, ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Derek Hortt",        a:12, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:44.006}, gsd2:{fin:43.335}, ls:{hill:null,  fin:null},  gnw:{fin:30.268}, pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Kaiden Saba",        a:12, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:44.969}, gsd2:{fin:44.225}, ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Kingston Simmons",   a:12, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:45.619}, gsd2:{fin:null},   ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Max Singleton",      a:12, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:46.899}, gsd2:{fin:43.728}, ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Montana Mcgraw",     a:12, sc:{r:null,t30:null,cor:null, fin:null},   gsd1:{fin:46.932}, gsd2:{fin:44.985}, ls:{hill:null,  fin:null},  gnw:{fin:31.443}, pal:{t30:null,  cor:null,   fin:null}},
+  // So Cal only 12x refs
+  {n:"Pierce Collingwood", a:12, sc:{r:2,  t30:1.883,cor:5.646,fin:29.099},gsd1:{fin:null},   gsd2:{fin:null},   ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Lucas Walker",       a:12, sc:{r:6,  t30:2.014,cor:5.959,fin:30.142},gsd1:{fin:null},   gsd2:{fin:null},   ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Jaxon Woods",        a:12, sc:{r:7,  t30:1.939,cor:5.775,fin:30.214},gsd1:{fin:null},   gsd2:{fin:null},   ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"Jacob Linares",      a:12, sc:{r:8,  t30:2.000,cor:5.838,fin:30.489},gsd1:{fin:null},   gsd2:{fin:null},   ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+  {n:"John Kerr",          a:12, sc:{r:10, t30:1.992,cor:5.966,fin:30.572},gsd1:{fin:null},   gsd2:{fin:null},   ls:{hill:null,  fin:null},  gnw:{fin:null},   pal:{t30:null,  cor:null,   fin:null}},
+];
+
+// Ray's actual times
+const RAY = {
+  name:"Ray Sode", age:12,
+  sc:  {r:9, t30:2.072, cor:6.062, fin:30.539},
+  pal: {t30:1.940, cor:14.567, fin:null},
+};
+
+// Event config
+const EVENTS = {
+  gsd1:{label:"GSNats Day 1",  segs:["fin"],           seg_labels:{fin:"Finish"},                 col:"#39d0d0"},
+  gsd2:{label:"GSNats Day 2",  segs:["fin"],           seg_labels:{fin:"Finish"},                 col:"#0e7490"},
+  sc:  {label:"So Cal Day 2",  segs:["t30","cor","fin"],seg_labels:{t30:"30ft",cor:"Corner",fin:"Finish"}, col:"#58a6ff"},
+  ls:  {label:"Lonestar Day 2",segs:["hill","fin"],    seg_labels:{hill:"Hill",fin:"Finish"},     col:"#f47068"},
+  gnw: {label:"GNW Day 2",     segs:["fin"],           seg_labels:{fin:"Finish"},                 col:"#bc8cff"},
+  pal: {label:"PAL May",       segs:["t30","cor","fin"],seg_labels:{t30:"30ft",cor:"Corner",fin:"Finish"}, col:"#7ee787"},
+};
+
+// Populate reference rider dropdown — only So Cal Day 2 riders with full times
+function populateRefDropdown(){
+  const sel = document.getElementById('refSelect');
+  sel.innerHTML = '<option value="ray">— use Ray\'s own So Cal times —</option>';
+  const withTimes = RIDERS.filter(r => r.sc.t30 !== null && r.sc.fin !== null);
+  withTimes.sort((a,b) => a.sc.fin - b.sc.fin);
+  withTimes.forEach(r => {
+    const opt = document.createElement('option');
+    opt.value = r.n;
+    opt.textContent = `${r.n} (${r.a}x) — SC fin: ${r.sc.fin.toFixed(3)}s`;
+    sel.appendChild(opt);
+  });
+}
+
+// Get Ray's delta multipliers vs chosen reference rider at So Cal
+// Returns {d30, dcor, dfin} where each is (ray_time / ref_time) — ratio > 1 means Ray is slower
+function getRayDeltas(refName){
+  if(refName === 'ray') return null; // use Ray's actual times
+  const ref = RIDERS.find(r => r.n === refName);
+  if(!ref || !ref.sc.t30) return null;
+  return {
+    d30:  RAY.sc.t30  / ref.sc.t30,
+    dcor: RAY.sc.cor  / ref.sc.cor,
+    dfin: RAY.sc.fin  / ref.sc.fin,
+  };
+}
+
+// Get Ray's estimated or real times for a given event
+function getRayTimes(eventKey, deltas){
+  const ev = EVENTS[eventKey];
+  // If Ray was actually at this event, use real times
+  if(eventKey === 'sc') return {real:true, t30:RAY.sc.t30, cor:RAY.sc.cor, fin:RAY.sc.fin};
+  if(eventKey === 'pal') return {real:true, t30:RAY.pal.t30, cor:RAY.pal.cor, fin:RAY.pal.fin};
+
+  if(!deltas) return null; // no reference selected
+
+  // Find the reference rider's times at this event
+  const refName = document.getElementById('refSelect').value;
+  const ref = RIDERS.find(r => r.n === refName);
+  if(!ref) return null;
+
+  const evData = ref[eventKey === 'gsd1' ? 'gsd1' : eventKey === 'gsd2' ? 'gsd2' : eventKey];
+  if(!evData) return null;
+
+  const result = {real:false};
+
+  if(eventKey === 'gsd1' || eventKey === 'gsd2'){
+    const base = eventKey === 'gsd1' ? ref.gsd1.fin : ref.gsd2.fin;
+    result.fin = base !== null ? base * deltas.dfin : null;
+  } else if(eventKey === 'ls'){
+    result.hill = ref.ls.hill !== null ? ref.ls.hill * deltas.d30 : null;
+    result.fin  = ref.ls.fin  !== null ? ref.ls.fin  * deltas.dfin : null;
+  } else if(eventKey === 'gnw'){
+    result.fin = ref.gnw.fin !== null ? ref.gnw.fin * deltas.dfin : null;
+  }
+  return result;
+}
+
+// Get rider's times for event
+function getRiderEventTimes(rider, eventKey){
+  if(eventKey === 'gsd1') return {fin: rider.gsd1.fin};
+  if(eventKey === 'gsd2') return {fin: rider.gsd2.fin};
+  if(eventKey === 'sc')   return {t30: rider.sc.t30, cor: rider.sc.cor, fin: rider.sc.fin};
+  if(eventKey === 'ls')   return {hill: rider.ls.hill, fin: rider.ls.fin};
+  if(eventKey === 'gnw')  return {fin: rider.gnw.fin};
+  if(eventKey === 'pal')  return {t30: rider.pal.t30, cor: rider.pal.cor, fin: rider.pal.fin};
+  return {};
+}
+
+function bw(v, mn, mx, W=30){ if(v===null||mn===mx) return 0; return Math.max(2,Math.round(W*((mx-v+0.2)/(mx-mn+0.4)))); }
+const na = () => `<span class="t-na">—</span>`;
+const fmtT = (v, cls='t') => v===null ? na() : `<span class="${cls}">${v.toFixed(3)}</span>`;
+
+function render(){
+  const eventKey = document.getElementById('eventSelect').value;
+  const refName  = document.getElementById('refSelect').value;
+  const sortBy   = document.getElementById('sortSelect').value;
+
+  if(!eventKey){
+    document.getElementById('tableWrap').innerHTML = '<div class="no-data">Select an event to begin</div>';
+    document.getElementById('statCards').innerHTML = '';
+    document.getElementById('deltaSummary').style.display = 'none';
+    document.getElementById('infoBar').innerHTML = '';
+    return;
+  }
+
+  const ev = EVENTS[eventKey];
+  const deltas = getRayDeltas(refName);
+  const rayTimes = getRayTimes(eventKey, deltas);
+  const rayAtEvent = eventKey === 'sc' || eventKey === 'pal';
+
+  // Build display delta % string
+  let deltaDesc = '';
+  if(deltas && refName !== 'ray'){
+    const ref = RIDERS.find(r => r.n === refName);
+    const d30str  = deltas.d30  ? `30ft: ${((deltas.d30-1)*100).toFixed(1)}%`  : '';
+    const dcorstr = deltas.dcor ? `corner: ${((deltas.dcor-1)*100).toFixed(1)}%` : '';
+    const dfinstr = deltas.dfin ? `finish: ${((deltas.dfin-1)*100).toFixed(1)}%` : '';
+    deltaDesc = [d30str, dcorstr, dfinstr].filter(Boolean).join(' · ');
+  }
+
+  // Build rows: all riders with any data at this event, plus Ray
+  const segs = ev.segs;
+
+  // Collect all riders + Ray with finish times for ranking
+  let rows = RIDERS.filter(r => {
+    const t = getRiderEventTimes(r, eventKey);
+    const hasData = t.fin !== null || (segs.includes('hill') && t.hill !== null);
+    if(!hasData) return false;
+    if(ageFilter === 'all') return true;
+    return String(r.a) === ageFilter;
+  }).map(r => ({
+    ...r,
+    isRay: false,
+    times: getRiderEventTimes(r, eventKey),
+    estimated: false,
+  }));
+
+  // Add Ray row
+  const rayRow = {
+    n: 'Ray Sode', a: 12, isRay: true,
+    times: rayTimes ? {...rayTimes} : null,
+    estimated: rayTimes ? !rayTimes.real : false,
+    sc: RAY.sc,
+  };
+  if(rayTimes && rayTimes.fin !== null) rows.push(rayRow);
+  else if(rayTimes) rows.push(rayRow); // show even if no fin, may have other segs
+
+  // Sort
+  const finKey = segs.includes('fin') ? 'fin' : null;
+  rows.sort((a,b) => {
+    if(sortBy === 'name') return a.n.localeCompare(b.n);
+    const af = a.times ? a.times.fin : null;
+    const bf = b.times ? b.times.fin : null;
+    if(af===null&&bf===null) return 0;
+    if(af===null) return 1; if(bf===null) return -1;
+    return af - bf;
+  });
+
+  // Compute Ray's rank among all finish times
+  const allFins = rows.filter(r => r.times && r.times.fin !== null).map(r => r.times.fin).sort((a,b)=>a-b);
+  const getRank = fin => fin !== null ? allFins.indexOf(fin) + 1 : null;
+  const rayFin  = rayTimes ? rayTimes.fin : null;
+  const rayRank = getRank(rayFin);
+
+  // Min/max for bars
+  const [mnFin, mxFin] = (() => { const v = allFins; return v.length ? [v[0], v[v.length-1]] : [0,1]; })();
+
+  // ── Stat cards
+  const totalRiders = rows.length;
+  const fastestFin = allFins[0];
+  const fastestRider = rows.find(r => r.times && r.times.fin === fastestFin);
+
+  document.getElementById('statCards').innerHTML = `
+    <div class="stat-card"><div class="label">Event</div><div class="value" style="font-size:1rem;color:${ev.col}">${ev.label}</div><div class="sub">Best finish time</div></div>
+    <div class="stat-card"><div class="label">Riders</div><div class="value val-blue">${totalRiders}</div><div class="sub">with finish data</div></div>
+    <div class="stat-card"><div class="label">Ray's est. finish</div><div class="value val-ray">${rayFin ? rayFin.toFixed(3)+'s' : '—'}</div><div class="sub">${rayTimes && rayTimes.real ? 'actual time' : 'estimated'}</div></div>
+    <div class="stat-card"><div class="label">Ray's est. rank</div><div class="value val-ray">${rayRank ? '#'+rayRank : '—'}</div><div class="sub">of ${totalRiders} riders</div></div>
+    ${fastestRider ? `<div class="stat-card"><div class="label">Fastest</div><div class="value" style="font-size:0.95rem;font-weight:500;color:var(--amber)">${fastestRider.n}</div><div class="sub">${fastestFin.toFixed(3)}s</div></div>` : ''}
+  `;
+
+  // ── Delta summary
+  const dsEl = document.getElementById('deltaSummary');
+  if(deltas && refName !== 'ray'){
+    const ref = RIDERS.find(r => r.n === refName);
+    dsEl.style.display = 'flex';
+    const fmt = (v, lbl) => v ? `<div class="ds-item"><span class="ds-label">${lbl}</span><span class="ds-val" style="color:${(v-1)>0?'var(--red)':'var(--green)'}">${((v-1)*100).toFixed(2)}%</span></div>` : '';
+    dsEl.innerHTML = `
+      <div class="ds-item"><span class="ds-label">Reference:</span><span class="ds-val" style="color:var(--blue)">${refName} (${ref.a}x, SC fin: ${ref.sc.fin.toFixed(3)}s)</span></div>
+      <div class="ds-divider"></div>
+      ${fmt(deltas.d30,'Ray Δ 30ft')}
+      ${deltas.d30 ? '<div class="ds-divider"></div>' : ''}
+      ${fmt(deltas.dcor,'Ray Δ corner')}
+      ${deltas.dcor ? '<div class="ds-divider"></div>' : ''}
+      ${fmt(deltas.dfin,'Ray Δ finish')}
+      <div style="margin-left:auto;font-size:11px;font-family:var(--mono);color:var(--text-3)">positive % = Ray is slower · negative % = Ray is faster</div>
+    `;
+  } else if(rayAtEvent){
+    dsEl.style.display = 'flex';
+    dsEl.innerHTML = `<span style="font-family:var(--mono);font-size:12px;color:var(--ray-text)">★ Ray attended this event — showing his actual recorded times</span>`;
+  } else {
+    dsEl.style.display = 'none';
+  }
+
+  // ── Info bar
+  document.getElementById('infoBar').innerHTML = `
+    <div class="info-chip"><span class="dot" style="background:${ev.col}"></span>${ev.label}</div>
+    <div class="info-chip"><span class="dot" style="background:var(--ray-text)"></span>Ray Sode — ${rayTimes ? (rayTimes.real ? 'actual times' : 'estimated') : 'no estimate available'}</div>
+    ${deltaDesc ? `<span class="est-note">Ray's deltas vs ${refName}: ${deltaDesc}</span>` : ''}
+  `;
+
+  // ── Table
+  const hasHill = segs.includes('hill');
+  const has30   = segs.includes('t30');
+  const hasCor  = segs.includes('cor');
+  const hasFin  = segs.includes('fin');
+
+  let thead = `<thead><tr>
+    <th style="width:40px">#</th>
+    <th>Rider</th>
+    <th>Age</th>
+    ${has30  ? `<th class="div-l">30ft</th>` : ''}
+    ${hasCor ? `<th>Corner</th>` : ''}
+    ${hasHill? `<th class="div-l">Hill</th>` : ''}
+    ${hasFin ? `<th ${(!has30&&!hasCor&&!hasHill)?'class="div-l"':''}>Finish</th>` : ''}
+    <th>Est. rank</th>
+    <th class="div-l" style="color:var(--text-2)">So Cal 30ft</th>
+    <th>So Cal corner</th>
+    <th>So Cal finish</th>
+  </tr></thead>`;
+
+  let tbody = '<tbody>';
+  rows.forEach((r, i) => {
+    const isRay = r.isRay;
+    const rank  = r.times && r.times.fin !== null ? getRank(r.times.fin) : null;
+    const ab    = isRay ? `<span class="badge b-ray">12x</span>` : r.a===11 ? `<span class="badge b-11">11x</span>` : `<span class="badge b-12">12x</span>`;
+    const rkEl  = rank ? `<span class="rank-badge ${rank<=3?'top3':''} ${isRay?'ray-rank':''}">${rank}</span>` : na();
+    const nm    = `<div class="name-cell">${r.n}${isRay ? ' <span style="font-size:9px;font-family:var(--mono);color:var(--ray-text);margin-left:2px">'+(r.estimated?'est':'real')+'</span>' : ''}</div>`;
+
+    const renderSeg = (v, isEst) => {
+      if(v === null) return na();
+      const cls = isRay ? (isEst ? 't-est' : 't-ray') : 't-good';
+      const prefix = isEst ? '~' : '';
+      const bw_ = bw(v, mnFin, mxFin);
+      const barColor = isRay ? 'var(--ray-text)' : ev.col;
+      if(v === (r.times && r.times.fin)){
+        return `<div class="bar-wrap"><span class="mini-bar" style="width:${bw_}px;background:${barColor};opacity:${isEst?0.5:1}"></span><span class="${cls}">${prefix}${v.toFixed(3)}</span></div>`;
+      }
+      return `<span class="${cls}">${prefix}${v.toFixed(3)}</span>`;
+    };
+
+    // So Cal reference times
+    const scData = isRay ? RAY.sc : r.sc;
+    const sc30  = scData && scData.t30  !== null ? `<span class="t">${scData.t30.toFixed(3)}</span>`  : na();
+    const sccor = scData && scData.cor  !== null ? `<span class="t">${scData.cor.toFixed(3)}</span>`  : na();
+    const scfin = scData && scData.fin  !== null ? `<span class="t">${scData.fin.toFixed(3)}</span>`  : na();
+
+    const t = r.times || {};
+    const isEst = isRay && r.estimated;
+
+    tbody += `<tr class="${isRay?'ray-row':''}">
+      <td>${rkEl}</td>
+      <td>${nm}</td>
+      <td>${ab}</td>
+      ${has30   ? `<td class="div-l">${renderSeg(t.t30  || null, isEst)}</td>` : ''}
+      ${hasCor  ? `<td>${renderSeg(t.cor   || null, isEst)}</td>` : ''}
+      ${hasHill ? `<td class="div-l">${renderSeg(t.hill || null, isEst)}</td>` : ''}
+      ${hasFin  ? `<td>${renderSeg(t.fin   || null, isEst)}</td>` : ''}
+      <td>${rkEl}</td>
+      <td class="div-l">${sc30}</td>
+      <td>${sccor}</td>
+      <td>${scfin}</td>
+    </tr>`;
+  });
+  tbody += '</tbody>';
+
+  document.getElementById('tableWrap').innerHTML = `<table>${thead}${tbody}</table>`;
+}
+
+// Init
+let ageFilter = 'all';
+
+populateRefDropdown();
+document.getElementById('eventSelect').addEventListener('change', render);
+document.getElementById('refSelect').addEventListener('change', render);
+document.getElementById('sortSelect').addEventListener('change', render);
+
+document.querySelectorAll('.age-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    ageFilter = btn.dataset.age;
+    document.querySelectorAll('.age-btn').forEach(b => {
+      b.className = 'age-btn' + (b.dataset.age === ageFilter ? ` active-${ageFilter}` : '');
+    });
+    render();
+  });
+});
+</script>
+</body>
+</html>
