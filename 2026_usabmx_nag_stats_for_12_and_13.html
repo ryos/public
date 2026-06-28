@@ -570,6 +570,73 @@ function showTab(id) {
   document.getElementById(id).classList.add('active');
   const idx = {v1:0, v2:1, v3:2, v4:3}[id];
   document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+  syncURL();
+}
+
+// ---------------------------------------------------------------------------
+// Shareable URLs — every view's dropdown selections are mirrored into the
+// URL hash (so static-file/GitHub Pages hosting works with no server), and
+// restored from it on load so a copied/shared link reproduces the exact view.
+// ---------------------------------------------------------------------------
+
+function syncURL() {
+  const params = new URLSearchParams();
+  const activeTab = document.querySelector('.tab-panel.active');
+  if (activeTab) params.set('tab', activeTab.id);
+
+  const v1c = document.getElementById('v1-class').value;
+  if (v1c) params.set('class', v1c);
+
+  const v2e = document.getElementById('v2-event').value;
+  if (v2e) params.set('event', v2e);
+  const v2t = document.getElementById('v2-type').value;
+  if (v2t) params.set('type', v2t);
+  const v2a = document.getElementById('v2-age').value;
+  if (v2a) params.set('age', v2a);
+
+  const v3r = document.getElementById('v3-rider').value;
+  if (v3r) params.set('rider', v3r);
+
+  const v4r1 = document.getElementById('v4-rider1').value;
+  if (v4r1) params.set('rider1', v4r1);
+  const v4r2 = document.getElementById('v4-rider2').value;
+  if (v4r2) params.set('rider2', v4r2);
+
+  const hash = '#' + params.toString();
+  if (location.hash !== hash) history.replaceState(null, '', hash);
+}
+
+function restoreFromURL() {
+  const params = new URLSearchParams(location.hash.slice(1));
+
+  const v1c = params.get('class');
+  if (v1c) document.getElementById('v1-class').value = v1c;
+
+  const v2e = params.get('event');
+  if (v2e) document.getElementById('v2-event').value = v2e;
+  const v2t = params.get('type');
+  if (v2t) document.getElementById('v2-type').value = v2t;
+  const v2a = params.get('age');
+  if (v2a) document.getElementById('v2-age').value = v2a;
+
+  const v3r = params.get('rider');
+  if (v3r) document.getElementById('v3-rider').value = v3r;
+
+  const v4r1 = params.get('rider1');
+  if (v4r1) {
+    document.getElementById('v4-rider1').value = v4r1;
+    onV4Rider1Change(); // repopulates the rider2 dropdown for this rider1
+  }
+  const v4r2 = params.get('rider2');
+  if (v4r2) document.getElementById('v4-rider2').value = v4r2;
+
+  renderV1();
+  renderV2();
+  renderV3();
+  renderV4();
+
+  const tab = params.get('tab');
+  if (tab) showTab(tab);
 }
 
 // ---------------------------------------------------------------------------
@@ -595,6 +662,7 @@ function sortV1(col) {
 }
 
 function renderV1() {
+  syncURL();
   const classFilter = document.getElementById('v1-class').value;
   const rows = DATA.riderStats
     .filter(r => !classFilter || r.class === classFilter)
@@ -639,7 +707,7 @@ function renderV1() {
 // View 2 – Event Results
 // ---------------------------------------------------------------------------
 
-let v2Sort = {col: 'best', dir: 1};
+let v2Sort = {col: 'classRank', dir: 1};
 
 const V2_COLS = [
   {key: 'name',      label: 'Rider',       num: false},
@@ -661,6 +729,7 @@ function sortV2(col) {
 }
 
 function renderV2() {
+  syncURL();
   const event     = document.getElementById('v2-event').value;
   const type      = document.getElementById('v2-type').value;
   const ageFilter = document.getElementById('v2-age').value;
@@ -748,6 +817,7 @@ function sortV3Ov(col) {
 }
 
 function renderV3() {
+  syncURL();
   const rider = document.getElementById('v3-rider').value;
   const el    = document.getElementById('v3-content');
   if (!rider) { el.innerHTML = '<div class="placeholder">Select a rider above.</div>'; return; }
@@ -756,10 +826,13 @@ function renderV3() {
   let h = `<div class="v3-rider-name">${rider}</div>`;
 
   const clsOrder = (c) => (c.endsWith('X') ? 0 : 1) * 100 + parseInt(c);
+  const typeOrder = (c) => c.endsWith('X') ? 0 : 1; // Expert classes always ahead of Cruiser
 
-  // Sort overview rows by v3OvSort, falling back to Expert-first
+  // Expert vs Cruiser always wins first; within the same type, sort by
+  // v3OvSort, falling back to age order.
   const rdEntries = Object.entries(rd).sort((a, b) => {
     const [ca, da] = a, [cb, db] = b;
+    if (typeOrder(ca) !== typeOrder(cb)) return typeOrder(ca) - typeOrder(cb);
     const getVal = ([c, d]) => {
       const total = d.first + d.second + d.third + d.other;
       return {class: c, events: total, first: d.first, second: d.second,
@@ -1053,6 +1126,7 @@ function renderV4Table(r1, r2, rows) {
 }
 
 function renderV4() {
+  syncURL();
   const r1 = document.getElementById('v4-rider1').value;
   const r2 = document.getElementById('v4-rider2').value;
   const el = document.getElementById('v4-content');
@@ -1120,12 +1194,7 @@ function renderV4() {
     v4sel.appendChild(opt);
   }
 
-  renderV1();
-  renderV2();
-  document.getElementById('v3-content').innerHTML =
-    '<div class="placeholder">Select a rider above.</div>';
-  document.getElementById('v4-content').innerHTML =
-    '<div class="placeholder">Select two riders above.</div>';
+  restoreFromURL();
 })();
 </script>
 </body>
