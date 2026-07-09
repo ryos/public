@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Finding the Line — A Bend, Oregon Riding Trip</title>
+<title>2026 Summer Bend Trip</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -60,14 +60,6 @@
     font-size:clamp(34px,6vw,58px);
     line-height:1.02;
     color:#fbf7ec;
-    max-width:12ch;
-  }
-  .hero h1 em{font-style:italic;color:var(--rust);}
-  .hero-sub{
-    margin-top:18px;
-    max-width:52ch;
-    color:#d8d3c2;
-    font-size:16.5px;
   }
   .route-svg{width:100%;height:auto;margin-top:38px;display:block;}
   .route-svg .path{stroke:var(--rust);stroke-width:2;fill:none;stroke-dasharray:6 6;}
@@ -143,32 +135,69 @@
   .tbl-sub{font-family:'Fraunces',serif;font-weight:600;font-size:19px;margin:28px 0 10px;}
   .tbl-sub:first-child{margin-top:0;}
   .tbl-subdek{color:#4a4f42;font-size:13.5px;margin:-4px 0 12px;max-width:62ch;}
+  .sub-note{
+    font-family:'IBM Plex Mono',monospace;font-weight:400;font-size:12px;
+    text-transform:uppercase;letter-spacing:.05em;color:var(--rust-dark);
+    margin-left:4px;
+  }
+  .map-embed{
+    width:100%;aspect-ratio:16/6;min-height:260px;
+    border-radius:4px;overflow:hidden;border:1px solid var(--line);
+    background:#000;margin-bottom:18px;
+  }
+  .map-embed.map-embed-sm{aspect-ratio:16/4;min-height:180px;margin-bottom:10px;}
+  .map-embed iframe{width:100%;height:100%;border:0;display:block;}
+  .tbl-meal{
+    display:block;font-family:'IBM Plex Mono',monospace;font-size:12px;
+    text-transform:uppercase;letter-spacing:.08em;color:var(--pine-dark);
+    margin:4px 0 8px;
+  }
 
-  /* ---------- TABS ---------- */
-  .tabs{
-    display:flex;flex-wrap:wrap;gap:6px;
+  /* ---------- TAB MENU (hamburger + dropdown) ---------- */
+  .tab-menu{
+    display:flex;align-items:center;gap:14px;
     background:var(--ink);
-    padding:8px;
+    padding:12px 16px;
     border-radius:8px;
     margin:34px 0 0;
     box-shadow:0 6px 20px rgba(32,38,30,0.18);
+    cursor:pointer;
+    position:relative;
   }
+  .menu-toggle{
+    background:transparent;border:none;cursor:pointer;
+    display:flex;flex-direction:column;justify-content:center;gap:4px;
+    padding:6px;flex:0 0 auto;
+  }
+  .menu-toggle span{display:block;width:20px;height:2px;background:#fbf7ec;border-radius:1px;transition:transform .15s ease,opacity .15s ease;}
+  .tab-menu.open .menu-toggle span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+  .tab-menu.open .menu-toggle span:nth-child(2){opacity:0;}
+  .tab-menu.open .menu-toggle span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+  .tab-menu-label{
+    font-family:'Fraunces',serif;font-weight:600;font-size:16px;color:#fbf7ec;
+  }
+  .tabs{
+    display:none;
+    flex-direction:column;gap:2px;
+    background:var(--ink);
+    padding:8px;
+    border-radius:8px;
+    margin:6px 0 0;
+    box-shadow:0 6px 20px rgba(32,38,30,0.18);
+  }
+  .tabs.open{display:flex;}
   .tab-btn{
-    flex:1 1 auto;
+    width:100%;text-align:left;
     background:transparent;border:none;cursor:pointer;
     font-family:'IBM Plex Mono',monospace;font-size:13px;
     text-transform:uppercase;letter-spacing:.06em;
     color:#a8a494;
-    padding:15px 18px;
+    padding:14px 16px;
     border-radius:5px;
-    text-align:center;
-    transition:background .15s ease,color .15s ease,transform .1s ease;
+    transition:background .15s ease,color .15s ease;
   }
   .tab-btn:hover{background:rgba(255,255,255,.08);color:#fbf7ec;}
-  .tab-btn.active{
-    background:var(--rust);color:#fbf3e8;
-    box-shadow:0 4px 14px rgba(184,72,31,.4);
-  }
+  .tab-btn.active{background:var(--rust);color:#fbf3e8;}
   .tab-btn.active:hover{background:var(--rust);}
   .tab-panel{display:none;padding-top:28px;}
   .tab-panel.active{display:block;}
@@ -177,8 +206,8 @@
     .tbl-row{grid-template-columns:1fr;gap:4px;}
     .tbl-row.has-video{grid-template-columns:1fr;}
     .tbl-row .col-name .tag{margin-bottom:2px;}
-    .tabs{gap:4px;padding:6px;}
-    .tab-btn{flex:1 1 42%;padding:12px 10px;font-size:11px;}
+    .map-embed{aspect-ratio:4/3;}
+    .map-embed.map-embed-sm{aspect-ratio:1/1;min-height:0;}
   }
 
   /* ---------- footer ---------- */
@@ -207,17 +236,18 @@
     body{background:#fff;font-size:12.5px;}
     .hero{background:#fff !important;color:#111 !important;padding:20px 0;}
     .hero h1{color:#111;}
-    .hero-sub{color:#333;}
     .hero .route-svg text{fill:#333;}
     .hero .route-svg text.city{fill:#111;}
     .hero .route-svg .node, .hero .route-svg .node-end{fill:#111;}
     .tbl{border:1px solid #999;}
     .tbl-row{break-inside:avoid;}
     a{color:#111 !important;text-decoration:underline;}
+    .tab-menu{display:none;}
     .tabs{display:none;}
     .tab-panel{display:block !important;padding-top:0;}
     .tbl-row.has-video{grid-template-columns:200px 1fr;}
     .tbl-video, .tbl-video-label{display:none;}
+    .map-embed{display:none;}
   }
 </style>
 </head>
@@ -226,8 +256,7 @@
 <div class="hero">
   <div class="hero-inner">
     <div class="eyebrow">West San Jose → Bend, Oregon</div>
-    <h1>Finding the <em>Line</em>,<br>Family Edition</h1>
-    <p class="hero-sub">A riding trip built around three things: gate starts at Bend BMX, dirt jump sessions at Big Sky, and lift-served flow at Mt. Bachelor — with the whole family along for it.</p>
+    <h1>2026 Summer Bend Trip</h1>
 
     <svg class="route-svg" viewBox="0 0 860 90" preserveAspectRatio="xMinYMid meet">
       <path class="path" d="M20,60 C150,20 250,80 380,45 C480,15 560,70 680,35 C740,15 780,40 830,25"/>
@@ -247,12 +276,20 @@
 
 <div class="wrap">
 
-  <!-- TABS -->
-  <div class="tabs" role="tablist">
+  <!-- TAB MENU -->
+  <div class="tab-menu" id="tab-menu">
+    <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="tab-dropdown" aria-label="Open section menu">
+      <span></span><span></span><span></span>
+    </button>
+    <span class="tab-menu-label" id="tab-menu-label">Itinerary</span>
+  </div>
+  <div class="tabs" id="tab-dropdown" role="tablist">
     <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="panel-itinerary" data-tab="panel-itinerary">1 · Itinerary</button>
     <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-accommodations" data-tab="panel-accommodations">2 · Accommodations</button>
     <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-scenic" data-tab="panel-scenic">3 · Scenic Stops</button>
     <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-details" data-tab="panel-details">4 · Bike Park &amp; Shop Info</button>
+    <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-food" data-tab="panel-food">5 · Food &amp; Fuel</button>
+    <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-relax" data-tab="panel-relax">6 · Mom &amp; Grandma</button>
   </div>
 
   <!-- 1. ITINERARY -->
@@ -395,7 +432,7 @@
   <section id="panel-details" class="tab-panel" role="tabpanel">
     <div class="signpost">4 · The Details</div>
     <h2 class="section-title">Bike park &amp; bike shop info</h2>
-    <p class="section-dek">Everything riding-related in one place: the five venues on the itinerary, bonus BMX tracks along the San Jose → Bend corridor, local bike shops, and family fuel stops.</p>
+    <p class="section-dek">Everything riding-related in one place: the five venues on the itinerary, bonus BMX tracks along the San Jose → Bend corridor, and local bike shops.</p>
 
     <h3 class="tbl-sub">Bike parks &amp; tracks</h3>
     <div class="tbl">
@@ -535,8 +572,82 @@
         <p>Sales, service, and rentals — known for fast turnaround if something needs a same-day fix.</p>
       </div>
     </div>
+  </section>
 
-    <h3 class="tbl-sub">Food &amp; fuel</h3>
+  <!-- 5. FOOD & FUEL -->
+  <section id="panel-food" class="tab-panel" role="tabpanel">
+    <div class="signpost">5 · Fuel Stops</div>
+    <h2 class="section-title">Food &amp; fuel</h2>
+    <p class="section-dek">Highly rated breakfast, lunch, and dinner picks for the two towns you'll actually be eating in — Mount Shasta on the Day 1 overnight split, and Bend for the rest of the week. Each mini map drops a pin on that meal's spots.</p>
+
+    <h3 class="tbl-sub">Mount Shasta, CA <span class="sub-note">overnight stop, Mon 7/27</span></h3>
+
+    <span class="tbl-meal">Breakfast</span>
+    <div class="map-embed map-embed-sm">
+      <iframe src="https://maps.google.com/maps?saddr=Seven+Suns+Coffee+%26+Cafe%2C+Mount+Shasta%2C+CA&daddr=Black+Bear+Diner%2C+Mount+Shasta%2C+CA&output=embed" title="Map of breakfast picks in Mount Shasta, CA" loading="lazy"></iframe>
+    </div>
+    <div class="tbl">
+      <div class="tbl-row">
+        <div class="col-name">Seven Suns Coffee &amp; Cafe</div>
+        <p>Beloved local staple for handcrafted coffee and a satisfying breakfast/lunch menu in a relaxed, community vibe — an easy first stop on the road.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Black Bear Diner</div>
+        <p>Classic diner comfort — hearty portions, easy for kids, a reliable pick before an early departure.</p>
+      </div>
+    </div>
+
+    <span class="tbl-meal">Lunch</span>
+    <div class="map-embed map-embed-sm">
+      <iframe src="https://maps.google.com/maps?saddr=Bistro+107%2C+Mount+Shasta%2C+CA&daddr=Casa+Ramos+Mexican+Restaurant%2C+Mount+Shasta%2C+CA&output=embed" title="Map of lunch picks in Mount Shasta, CA" loading="lazy"></iframe>
+    </div>
+    <div class="tbl">
+      <div class="tbl-row">
+        <div class="col-name">Bistro 107</div>
+        <p>Neighborhood bistro with burgers, sandwiches, and salads — the "wino burger" and pulled pork get called out, plus deck seating.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Casa Ramos Mexican Restaurant</div>
+        <p>Family-owned, generous portions of enchiladas, chile rellenos, and tacos al carbón — full bar too.</p>
+      </div>
+    </div>
+
+    <span class="tbl-meal">Dinner</span>
+    <div class="map-embed map-embed-sm">
+      <iframe src="https://maps.google.com/maps?saddr=Mount+Shasta+Craft+House%2C+Mount+Shasta%2C+CA&daddr=Pipeline+Craft+Taps+%26+Kitchen%2C+Mount+Shasta%2C+CA&output=embed" title="Map of dinner picks in Mount Shasta, CA" loading="lazy"></iframe>
+    </div>
+    <div class="tbl">
+      <div class="tbl-row">
+        <div class="col-name">Mount Shasta Craft House</div>
+        <p>Wood-fired pizzas, pastas, and burgers in a lively, family-friendly room — full bar.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Pipeline Craft Taps &amp; Kitchen</div>
+        <p>Near-perfect reviews for food and beer variety — burgers, pasta, and steak in a casual setting.</p>
+      </div>
+    </div>
+
+    <h3 class="tbl-sub">Bend, OR</h3>
+
+    <span class="tbl-meal">Breakfast</span>
+    <div class="map-embed map-embed-sm">
+      <iframe src="https://maps.google.com/maps?saddr=The+Lemon+Tree%2C+Bend%2C+OR&daddr=McKay+Cottage+Restaurant%2C+Bend%2C+OR&output=embed" title="Map of breakfast picks in Bend, OR" loading="lazy"></iframe>
+    </div>
+    <div class="tbl">
+      <div class="tbl-row">
+        <div class="col-name">The Lemon Tree<span class="tag">4.8★</span></div>
+        <p>Jumbo Lump Crab Cake Benedict built around Tumalo-grown produce. 718 NW Franklin Ave.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">McKay Cottage Restaurant<span class="tag">4.7★</span></div>
+        <p>French toast on Big Ed's cinnamon swirl bread, in a 1916 Craftsman bungalow. No reservations — go early, it gets crowded on weekends.</p>
+      </div>
+    </div>
+
+    <span class="tbl-meal">Lunch</span>
+    <div class="map-embed map-embed-sm">
+      <iframe src="https://maps.google.com/maps?saddr=Parrilla+Grill%2C+Bend%2C+OR&daddr=335+NE+Dekalb+Ave%2C+Bend%2C+OR+97701+to:Zydeco+Kitchen+%26+Cocktails%2C+Bend%2C+OR+to:Primal+Cuts%2C+Bend%2C+OR&output=embed" title="Map of lunch picks in Bend, OR" loading="lazy"></iframe>
+    </div>
     <div class="tbl">
       <div class="tbl-row">
         <div class="col-name">Parrilla Grill</div>
@@ -544,15 +655,89 @@
       </div>
       <div class="tbl-row">
         <div class="col-name">El Sancho</div>
-        <p>Tacos and Baja-style plates; good post-ride refuel.</p>
+        <p>Tacos and Baja-style plates; good post-ride refuel. 335 NE Dekalb Ave, Bend, OR 97701.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Zydeco Kitchen &amp; Cocktails<span class="tag">4.5★</span></div>
+        <p>Expertly crafted entrees and cocktails — a step up for a sit-down lunch when the group wants to slow down.</p>
       </div>
       <div class="tbl-row">
         <div class="col-name">Primal Cuts</div>
         <p>Meats, fine foods, casual plates — good for building a picnic for a bike park day.</p>
       </div>
+    </div>
+
+    <span class="tbl-meal">Dinner</span>
+    <div class="map-embed map-embed-sm">
+      <iframe src="https://maps.google.com/maps?saddr=Jacksons+Corner%2C+Bend%2C+OR&daddr=Rancher+Butcher+Chef%2C+Bend%2C+OR&output=embed" title="Map of dinner picks in Bend, OR" loading="lazy"></iframe>
+    </div>
+    <div class="tbl">
       <div class="tbl-row">
-        <div class="col-name">Jackson's Corner</div>
-        <p>Wood-fired, ingredient-driven, relaxed enough for the whole crew after a long day.</p>
+        <div class="col-name">Jackson's Corner<span class="tag">4.6★</span></div>
+        <p>Wood-fired, ingredient-driven, relaxed enough for the whole crew after a long day. 845 NW Delaware Ave.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Rancher Butcher Chef</div>
+        <p>Steak-and-seafood-forward spot in NorthWest Crossing, sourced from the owners' own ranch.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Finding the Line — Bend Trip Guide</span>
+    <span>Confirm all dates, hours, and prices directly with each venue before travel</span>
+  <!-- 6. MOM & GRANDMA -->
+  <section id="panel-relax" class="tab-panel" role="tabpanel">
+    <div class="signpost">6 · Slower Days</div>
+    <h2 class="section-title">Mom &amp; Grandma</h2>
+    <p class="section-dek">Non-bike options for slower mornings or afternoons off — tea, a craft session, an easy shaded walk, and shopping, all within a few minutes of the Old Mill basecamp. Room to add more here.</p>
+
+    <h3 class="tbl-sub">Afternoon tea</h3>
+    <div class="tbl">
+      <div class="tbl-row">
+        <div class="col-name">TEAL Tea + Art Lounge<span class="tag">Downtown Bend</span></div>
+        <div>
+          <p class="meta-line">1024 NW Bond St, Bend, OR 97703 · Mon–Thu 7am–8pm, Fri 7am–9pm, Sat 9am–9pm, Sun 9am–4pm</p>
+          <p>Opened spring 2026 next to Deschutes Brewery — 60+ loose-leaf teas from women-owned growers, pastries, toast, and cake by the slice, plus sit-down art classes if anyone wants to linger. Walk-in friendly, low-key.</p>
+        </div>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Steep Teahouse &amp; Gifts<span class="tag">Redmond, ~20 min</span></div>
+        <p>The full formal-tea experience — two sandwiches, two savories, a scone, two desserts, and a pot of loose-leaf tea for $29/person. <strong>Reservations required</strong> for Afternoon Tea and High Tea service.</p>
+      </div>
+    </div>
+
+    <h3 class="tbl-sub">Craft activity</h3>
+    <div class="tbl">
+      <div class="tbl-row">
+        <div class="col-name">Studio Create<span class="tag">Paint-your-own pottery</span></div>
+        <div>
+          <p class="meta-line">145 NE Revere Ave, Ste 1, Bend, OR · Tue–Sun 11am–6pm, closed Mondays</p>
+          <p>Walk-ins welcome for groups under 5 — no booking needed. Choose from 200+ ceramic pieces and 100+ glaze colors; pieces are kiln-fired and ready for pickup in 7–10 days, so paint early in the trip if you want to bring anything home.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="tbl-sub">Easy, shady walk</h3>
+    <div class="tbl">
+      <div class="tbl-row">
+        <div class="col-name">Deschutes River Trail<span class="tag">Old Mill Reach</span></div>
+        <div>
+          <p class="meta-line">Starts right at the Old Mill District · flat, paved, wheelchair-accessible</p>
+          <p>The easiest trail access in Bend — a flat, paved stretch that leaves the shops behind and follows the river through shaded pine and juniper. About 2.7 miles round trip for the fully paved section, or extend to a 4.4-mile loop if the group's up for it. The north side runs almost entirely in shade.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="tbl-sub">Shopping</h3>
+    <div class="tbl">
+      <div class="tbl-row">
+        <div class="col-name">Old Mill District<span class="tag">Zero-drive — basecamp</span></div>
+        <p>40+ shops right outside the door, and no Oregon sales tax. Boutiques worth a look: Vanilla Clothing Co., Hello Sunshine, Saxon's Fine Jewelers, Kara's Kitchenware, Confluence Fly Shop. Open Mon–Sat 10am–8pm, Sun 11am–6pm.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Downtown Bend<span class="tag">Wall St &amp; Bond St, ~10 min</span></div>
+        <p>More artsy and independent than Old Mill — worth the short drive for a change of scenery. The Bend Store (local goods), Outside IN (apparel/gear), Lone Crow Bungalow (home/Pendleton), Silverado (fine jewelry), Budd + Finn (curated boutique).</p>
       </div>
     </div>
   </section>
@@ -568,6 +753,30 @@
 <script>
   var tabBtns = document.querySelectorAll('.tab-btn');
   var tabPanels = document.querySelectorAll('.tab-panel');
+  var tabMenu = document.getElementById('tab-menu');
+  var menuToggle = document.getElementById('menu-toggle');
+  var tabDropdown = document.getElementById('tab-dropdown');
+  var tabMenuLabel = document.getElementById('tab-menu-label');
+
+  function closeMenu(){
+    tabMenu.classList.remove('open');
+    tabDropdown.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded','false');
+  }
+  function openMenu(){
+    tabMenu.classList.add('open');
+    tabDropdown.classList.add('open');
+    menuToggle.setAttribute('aria-expanded','true');
+  }
+
+  menuToggle.addEventListener('click', function(e){
+    e.stopPropagation();
+    if(tabDropdown.classList.contains('open')){ closeMenu(); } else { openMenu(); }
+  });
+  document.addEventListener('click', function(e){
+    if(!tabMenu.contains(e.target) && !tabDropdown.contains(e.target)){ closeMenu(); }
+  });
+
   tabBtns.forEach(function(btn){
     btn.addEventListener('click', function(){
       tabBtns.forEach(function(b){ b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
@@ -575,6 +784,8 @@
       btn.classList.add('active');
       btn.setAttribute('aria-selected','true');
       document.getElementById(btn.dataset.tab).classList.add('active');
+      tabMenuLabel.textContent = btn.textContent.replace(/^\d+\s*·\s*/, '');
+      closeMenu();
     });
   });
 </script>
