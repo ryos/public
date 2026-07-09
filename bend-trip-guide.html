@@ -1,1 +1,583 @@
-/Users/ryosode/Library/Mobile Documents/com~apple~CloudDocs/Family/2026 Summer Family Trip/bend-trip-guide.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finding the Line — A Bend, Oregon Riding Trip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#20261e;
+    --paper:#f5f1e6;
+    --paper-2:#eee7d6;
+    --rust:#b8481f;
+    --rust-dark:#8f3717;
+    --pine:#3d5a44;
+    --pine-dark:#2b4231;
+    --sky:#3e7089;
+    --sand:#d9c49a;
+    --line: rgba(32,38,30,0.16);
+    --card:#fffdf8;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.55;
+    font-size:16px;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:0 28px 80px;}
+  h1,h2,h3{font-family:'Fraunces',serif;font-weight:600;letter-spacing:-0.01em;margin:0;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:var(--rust-dark);}
+  a:visited{color:var(--rust-dark);}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:var(--ink);
+    color:var(--paper);
+    padding:64px 28px 46px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero-inner{max-width:920px;margin:0 auto;position:relative;z-index:2;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    text-transform:uppercase;
+    letter-spacing:.14em;
+    font-size:12px;
+    color:var(--sand);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--sand);display:inline-block;}
+  .hero h1{
+    font-size:clamp(34px,6vw,58px);
+    line-height:1.02;
+    color:#fbf7ec;
+    max-width:12ch;
+  }
+  .hero h1 em{font-style:italic;color:var(--rust);}
+  .hero-sub{
+    margin-top:18px;
+    max-width:52ch;
+    color:#d8d3c2;
+    font-size:16.5px;
+  }
+  .route-svg{width:100%;height:auto;margin-top:38px;display:block;}
+  .route-svg .path{stroke:var(--rust);stroke-width:2;fill:none;stroke-dasharray:6 6;}
+  .route-svg .node{fill:var(--paper);}
+  .route-svg .node-end{fill:var(--rust);}
+  .route-svg text{font-family:'IBM Plex Mono',monospace;font-size:11px;fill:#c9c3af;}
+  .route-svg text.city{fill:#fbf7ec;font-size:12px;}
+
+  /* ---------- SIGNPOST SECTION HEADERS ---------- */
+  .signpost{
+    display:inline-flex;
+    align-items:center;
+    background:var(--rust);
+    color:#fbf3e8;
+    padding:9px 20px 9px 16px;
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    margin: 56px 0 14px;
+  }
+  section > .signpost:first-child{margin-top:0;}
+  .section-title{font-size:clamp(24px,3.4vw,32px);margin-bottom:6px;}
+  .section-dek{color:#4a4f42;max-width:62ch;margin-bottom:22px;font-size:15px;}
+
+  /* ---------- TABULATED SECTIONS ---------- */
+  .tbl{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:3px;
+    margin-bottom:22px;
+    overflow:hidden;
+  }
+  .tbl-row{
+    display:grid;
+    grid-template-columns:200px 1fr;
+    gap:10px 22px;
+    padding:18px 22px;
+    align-items:start;
+  }
+  .tbl-row.has-video{grid-template-columns:200px 1fr 260px;}
+  .tbl-row + .tbl-row{border-top:1px dashed var(--line);}
+  .tbl-video{
+    position:relative;width:100%;aspect-ratio:16/9;
+    border-radius:4px;overflow:hidden;border:1px solid var(--line);
+    background:#000;
+  }
+  .tbl-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .tbl-video-label{
+    display:block;margin-top:6px;font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--pine-dark);
+  }
+  .tbl-row .col-name{
+    font-family:'Fraunces',serif;font-weight:600;font-size:16.5px;
+  }
+  .tbl-row .col-name .tag{
+    display:block;font-family:'IBM Plex Mono',monospace;font-weight:400;
+    font-size:11px;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--rust-dark);margin-top:5px;
+  }
+  .tbl-row p{margin:0 0 6px;font-size:14px;color:#4a4f42;}
+  .tbl-row .meta-line{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--pine-dark);
+    margin:0 0 8px;
+  }
+  .tbl-row ul{margin:6px 0 4px;padding-left:18px;font-size:13.5px;color:#3d4536;}
+  .tbl-row li{margin-bottom:4px;}
+  .tbl-link{
+    display:inline-block;margin-top:6px;font-family:'IBM Plex Mono',monospace;
+    font-size:12px;text-transform:uppercase;letter-spacing:.05em;
+  }
+  .tbl-sub{font-family:'Fraunces',serif;font-weight:600;font-size:19px;margin:28px 0 10px;}
+  .tbl-sub:first-child{margin-top:0;}
+  .tbl-subdek{color:#4a4f42;font-size:13.5px;margin:-4px 0 12px;max-width:62ch;}
+
+  /* ---------- TABS ---------- */
+  .tabs{
+    display:flex;flex-wrap:wrap;gap:6px;
+    background:var(--ink);
+    padding:8px;
+    border-radius:8px;
+    margin:34px 0 0;
+    box-shadow:0 6px 20px rgba(32,38,30,0.18);
+  }
+  .tab-btn{
+    flex:1 1 auto;
+    background:transparent;border:none;cursor:pointer;
+    font-family:'IBM Plex Mono',monospace;font-size:13px;
+    text-transform:uppercase;letter-spacing:.06em;
+    color:#a8a494;
+    padding:15px 18px;
+    border-radius:5px;
+    text-align:center;
+    transition:background .15s ease,color .15s ease,transform .1s ease;
+  }
+  .tab-btn:hover{background:rgba(255,255,255,.08);color:#fbf7ec;}
+  .tab-btn.active{
+    background:var(--rust);color:#fbf3e8;
+    box-shadow:0 4px 14px rgba(184,72,31,.4);
+  }
+  .tab-btn.active:hover{background:var(--rust);}
+  .tab-panel{display:none;padding-top:28px;}
+  .tab-panel.active{display:block;}
+
+  @media (max-width:640px){
+    .tbl-row{grid-template-columns:1fr;gap:4px;}
+    .tbl-row.has-video{grid-template-columns:1fr;}
+    .tbl-row .col-name .tag{margin-bottom:2px;}
+    .tabs{gap:4px;padding:6px;}
+    .tab-btn{flex:1 1 42%;padding:12px 10px;font-size:11px;}
+  }
+
+  /* ---------- footer ---------- */
+  footer{
+    margin-top:70px;padding-top:22px;border-top:1px solid var(--line);
+    font-family:'IBM Plex Mono',monospace;font-size:12px;color:#6a6f5f;
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
+  }
+
+  .print-btn{
+    position:fixed;bottom:22px;right:22px;
+    background:var(--rust);color:#fbf3e8;border:none;
+    font-family:'IBM Plex Mono',monospace;font-size:12.5px;text-transform:uppercase;
+    letter-spacing:.06em;padding:12px 18px;border-radius:30px;cursor:pointer;
+    box-shadow:0 6px 18px rgba(0,0,0,.25);
+    z-index:50;
+  }
+
+  @media (max-width: 640px){
+    .hero{padding:48px 20px 36px;}
+  }
+
+  /* ---------- PRINT ---------- */
+  @media print{
+    .print-btn{display:none;}
+    body{background:#fff;font-size:12.5px;}
+    .hero{background:#fff !important;color:#111 !important;padding:20px 0;}
+    .hero h1{color:#111;}
+    .hero-sub{color:#333;}
+    .hero .route-svg text{fill:#333;}
+    .hero .route-svg text.city{fill:#111;}
+    .hero .route-svg .node, .hero .route-svg .node-end{fill:#111;}
+    .tbl{border:1px solid #999;}
+    .tbl-row{break-inside:avoid;}
+    a{color:#111 !important;text-decoration:underline;}
+    .tabs{display:none;}
+    .tab-panel{display:block !important;padding-top:0;}
+    .tbl-row.has-video{grid-template-columns:200px 1fr;}
+    .tbl-video, .tbl-video-label{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">West San Jose → Bend, Oregon</div>
+    <h1>Finding the <em>Line</em>,<br>Family Edition</h1>
+    <p class="hero-sub">A riding trip built around three things: gate starts at Bend BMX, dirt jump sessions at Big Sky, and lift-served flow at Mt. Bachelor — with the whole family along for it.</p>
+
+    <svg class="route-svg" viewBox="0 0 860 90" preserveAspectRatio="xMinYMid meet">
+      <path class="path" d="M20,60 C150,20 250,80 380,45 C480,15 560,70 680,35 C740,15 780,40 830,25"/>
+      <circle class="node" cx="20" cy="60" r="4"/>
+      <text x="10" y="80" class="city">San Jose</text>
+      <circle class="node" cx="250" cy="60" r="3.5"/>
+      <text x="230" y="80">Mt. Shasta</text>
+      <circle class="node" cx="470" cy="34" r="3.5"/>
+      <text x="440" y="20">Klamath Falls</text>
+      <circle class="node" cx="650" cy="45" r="3.5"/>
+      <text x="600" y="66">Smith Rock (opt.)</text>
+      <circle class="node-end" cx="830" cy="25" r="5"/>
+      <text x="775" y="12" class="city">Bend</text>
+    </svg>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- TABS -->
+  <div class="tabs" role="tablist">
+    <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="panel-itinerary" data-tab="panel-itinerary">1 · Itinerary</button>
+    <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-accommodations" data-tab="panel-accommodations">2 · Accommodations</button>
+    <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-scenic" data-tab="panel-scenic">3 · Scenic Stops</button>
+    <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-details" data-tab="panel-details">4 · Bike Park &amp; Shop Info</button>
+  </div>
+
+  <!-- 1. ITINERARY -->
+  <section id="panel-itinerary" class="tab-panel active" role="tabpanel">
+    <div class="signpost">1 · The Plan</div>
+    <h2 class="section-title">Itinerary</h2>
+    <p class="section-dek">Six days, departing Mon 7/27: one afternoon for Big Sky + Bend BMX, one full day at Mt. Bachelor, one full day for the smaller bike parks (The Lair, Wanoga). Time the BMX afternoon for a Monday or Thursday local race night — skip the Aug 1–2 qualifier weekend.</p>
+
+    <div class="tbl">
+      <div class="tbl-row">
+        <div class="col-name">Day 1<span class="tag">Mon 7/27</span></div>
+        <div>
+          <p><strong>Travel</strong></p>
+          <ul>
+            <li>Early morning departure from West San Jose.</li>
+            <li>Drive to a scenic overnight stop — Mt. Shasta is the natural pick, roughly splitting the full drive in half.</li>
+            <li>This means skipping Bend BMX's Monday race night, in exchange for a slower, two-day drive.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Day 2<span class="tag">Tue 7/28</span></div>
+        <div>
+          <p><strong>Travel + Smith Rock BMX</strong></p>
+          <ul>
+            <li>Continue Mt. Shasta → Bend (~5 hrs), with stops (Klamath Falls, Collier Memorial, Peter Skene Ogden).</li>
+            <li>Smith Rock BMX (Redmond, ~25 min from Bend) races Tuesdays — a bonus track on arrival day, right on the way in.</li>
+            <li>Settle into the Airbnb after.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Day 3<span class="tag">Wed 7/29</span></div>
+        <div>
+          <p><strong>Mt. Bachelor Bike Park</strong></p>
+          <ul>
+            <li>Full day, lift ticket + bike rental bundle.</li>
+            <li>Progression run: FTL → Lower Lava Flow → Rockfall.</li>
+            <li>Redline for Ray once the group's warmed up — flagship black-diamond jump trail, size it up before committing.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Day 4<span class="tag">Thu 7/30</span></div>
+        <div>
+          <p><strong>Big Sky + Bend BMX</strong></p>
+          <ul>
+            <li>Afternoon: Big Sky Bike Park (~30 min pump track + jump lines).</li>
+            <li>Evening: Bend BMX — 5–6pm practice/registration, 6:10pm local race.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Day 5<span class="tag">Fri 7/31</span></div>
+        <div>
+          <p><strong>Smaller Bend Bike Parks</strong></p>
+          <ul>
+            <li>The Lair at Phil's Trailhead — check conditions first, progression jump lines.</li>
+            <li>Wanoga Sno-Park — Funner/Tiddlywinks or the newer lappable downhill runs.</li>
+            <li>Split the day between the two, or focus on whichever fits the group's skill level.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Day 6<span class="tag">Sat 8/1</span></div>
+        <div>
+          <p><strong>Travel Home</strong></p>
+          <ul>
+            <li>Head home before the Aug 1–2 Bend BMX qualifier weekend gets underway.</li>
+            <li>Split the return drive at Mt. Shasta again if a two-day trip home feels better than one long push.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <p class="section-dek" style="margin-top:16px;">This trades Monday's Bend BMX race night for a gentler two-day drive and a bonus night at Smith Rock BMX on arrival — Bend BMX itself is still covered Thursday.</p>
+  </section>
+
+  <!-- 2. ACCOMMODATIONS -->
+  <section id="panel-accommodations" class="tab-panel" role="tabpanel">
+    <div class="signpost">2 · Basecamp</div>
+    <h2 class="section-title">Accommodations</h2>
+    <p class="section-dek">Four of you this trip — Ray, Mom, Dad, and Grandma — so single-level layouts near Old Mill get priority over square footage. Old Mill District keeps you within about 15–20 minutes of all three venues.</p>
+
+    <div class="tbl">
+      <div class="tbl-row">
+        <div class="col-name">Old Mill Experience<span class="tag">No stairs</span></div>
+        <p>Single-story unit, half-mile walk to Old Mill shops and restaurants. The simplest option for Grandma — everything on one floor.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Single-Level Ranch Homes<span class="tag">No stairs</span></div>
+        <p>3BR/2BA, ~1,330 sq ft, gourmet kitchen, hot tub, private garden — about 1.5 miles from Old Mill. Search "Old Mill District, Bend" + "single story" on Airbnb to pull these up directly.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Salmon Lodge<span class="tag">Has stairs</span></div>
+        <p>3BR/3BA townhome — two upstairs primary suites (king + ensuite bath) plus a downstairs bunk room. Walkable to Old Mill, 20 min to Mt. Bachelor. Worth it if Grandma's fine with stairs and everyone wants their own space.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Riverhouse on the Deschutes<span class="tag">Hotel backup</span></div>
+        <p>Fallback if Airbnb availability falls through — river-side, family bunk rooms, indoor + outdoor pools, ground-floor rooms available on request.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. SCENIC STOPS -->
+  <section id="panel-scenic" class="tab-panel" role="tabpanel">
+    <div class="signpost">3 · On The Way</div>
+    <h2 class="section-title">Scenic stops, San Jose → Bend</h2>
+    <p class="section-dek">Breaking up a 9–10 hour drive for a family — these sit more or less along I-5 / Hwy 97. Mt. Shasta is the pick for the Mon 7/27 overnight stop.</p>
+
+    <div class="tbl">
+      <div class="tbl-row">
+        <div class="col-name">Lake Shasta Vista Point</div>
+        <p>Quick overlook stop, good for a leg-stretch and a photo.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Mount Shasta<span class="tag">Overnight stop</span></div>
+        <p>Roughly splits the drive in half — small-town stop with mountain views, good spot to break up the trip on Day 1.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Klamath Falls</div>
+        <p>Natural lunch/fuel stop about two-thirds of the way in. Klamath Falls BMX races Wed/Fri/Sun if the timing ever lines up.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Collier Memorial State Park</div>
+        <p>Logging history museum + a shaded rest stop along Hwy 97.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Peter Skene Ogden Scenic Viewpoint</div>
+        <p>Short walk to a dramatic canyon overlook, close to Bend.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Smith Rock State Park<span class="tag">Tue 7/28 race stop</span></div>
+        <p>Iconic canyon and climbing destination, right by Smith Rock BMX (1935 NE Maple, Redmond) — races Tuesdays and Fridays, ~25 min from Bend.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. BIKE PARK & BIKE SHOP INFO -->
+  <section id="panel-details" class="tab-panel" role="tabpanel">
+    <div class="signpost">4 · The Details</div>
+    <h2 class="section-title">Bike park &amp; bike shop info</h2>
+    <p class="section-dek">Everything riding-related in one place: the five venues on the itinerary, bonus BMX tracks along the San Jose → Bend corridor, local bike shops, and family fuel stops.</p>
+
+    <h3 class="tbl-sub">Bike parks &amp; tracks</h3>
+    <div class="tbl">
+      <div class="tbl-row">
+        <div class="col-name">Bend BMX<span class="tag">01 — Race</span></div>
+        <div>
+          <p class="meta-line">21690 NE Neff Rd, Bend, OR 97701 · Practice + sanctioned USA BMX racing</p>
+          <p>One of the premier tracks in the Northwest, and the anchor for the whole trip. Sign-ups for practice and racing run in person or online through the track's own schedule page.</p>
+          <ul>
+            <li><strong>Weekday races run Mondays and Thursdays</strong> — practice/registration 5:00–6:00pm, race start 6:10pm.</li>
+            <li>Check the online schedule before you go — practice nights and race days vary week to week.</li>
+            <li>If a national or regional qualifier lands during your visit, expect a bigger crowd and a longer day (gates often open well before race time).</li>
+          </ul>
+          <a class="tbl-link" href="http://bendbmx.com/" target="_blank">→ bendbmx.com</a>
+        </div>
+      </div>
+      <div class="tbl-row has-video">
+        <div class="col-name">Big Sky Bike Park<span class="tag">02 — Dirt Jumps</span></div>
+        <div>
+          <p class="meta-line">Adjacent to Bend BMX · Velosolutions pump track · jump lines · skills course · trials area · ~30 min needed</p>
+          <p>A <strong>Velosolutions-built asphalt pump track</strong> immediately adjacent to Bend BMX, alongside dirt jump lines, a skills area, and technical features — with a slopestyle terrain park and start tower planned for a future phase. It's a compact track, not a destination in itself: plan on about 30 minutes to sample it rather than a full session. Built with input from the local riding community, including former slopestyle pro Cam McCaul, who's been involved in advanced trail-building projects around Bend.</p>
+          <ul>
+            <li>Helmets are required under 16 by Oregon law; pads recommended for everyone.</li>
+            <li>Restrooms are in the concession building near Field 6, south of the BMX track.</li>
+            <li>The skills course and singletrack were built with adaptive-rider access — expect to share features with adaptive riders.</li>
+          </ul>
+          <a class="tbl-link" href="https://www.bendparksandrec.org/facility/big-sky-bike-park/" target="_blank">→ Bend Park &amp; Rec: Big Sky Bike Park</a>
+        </div>
+        <div>
+          <div class="tbl-video"><iframe src="https://www.youtube.com/embed/aG7ESVbety4" title="Big Sky Pump Track POV, Bend, Oregon" loading="lazy" allowfullscreen></iframe></div>
+          <span class="tbl-video-label">POV: Big Sky Pump Track</span>
+        </div>
+      </div>
+      <div class="tbl-row has-video">
+        <div class="col-name">Mt. Bachelor Bike Park<span class="tag">03 — Lift-Served</span></div>
+        <div>
+          <p class="meta-line">West Village base area, Mt. Bachelor · Lifts: Pine Marten Express · Sunshine Accelerator</p>
+          <p>More than a dozen miles of gravity trails, mostly reached off Pine Marten, with Little Pine as the beginner-friendly zone off Sunshine Accelerator. It's not a jump park on the scale of Whistler or Trestle — with one exception — but the trails matching your goals are well matched to a flow-and-jump-line day:</p>
+          <ul>
+            <li><strong>FTL</strong> — machine-built flow with wood, brick, and dirt berms plus placed jumps and rollers.</li>
+            <li><strong>Lava Flow (upper/middle)</strong> — dirt berms, jumps, rollers, transitioning out of the lava fields.</li>
+            <li><strong>Lower Lava Flow</strong> — reachable from mid/upper Lava Flow or off the Sunshine Accelerator top.</li>
+            <li><strong>Rockfall</strong> — narrower and more technical; a good next step once FTL and Lower Lava Flow feel comfortable.</li>
+            <li><strong>Redline</strong> — the flagship black-diamond jump trail, built by Kyle Jameson and Dirt Mechanics, often compared to Whistler's A-Line: step-up/step-down jumps, berms, rollers, and tabletops, tuned and watered daily. A strong match for Ray's BMX background — but high-consequence if ridden above ability, so size it up from the bottom before committing.</li>
+          </ul>
+          <p>Tickets run as daily, a 3-day pack, or a season pass — buying the bike park pass by June 30 typically gets the lowest price, and the season pass includes two free days at sister parks (Mt. Hood, Whitefish MT, Schweitzer ID).</p>
+          <p><strong>Cost-effective plan:</strong> bundling a lift ticket with a bike rental looks like the best value if you're not hauling your own downhill bikes up — no need to own or transport a dedicated park bike for one trip.</p>
+          <a class="tbl-link" href="https://www.mtbachelor.com/tickets-passes/summer-tickets-passes/bike-park-tickets-passes/" target="_blank">→ mtbachelor.com: bike park tickets</a>
+          <a class="tbl-link" href="https://shop.mtbachelor.com/s/summer/bike-rentals-3" target="_blank">→ mtbachelor.com: bike rental + ticket packages</a>
+        </div>
+        <div>
+          <div class="tbl-video"><iframe src="https://www.youtube.com/embed/oQpG-pbX28g" title="Redline Full Pull POV, Mt. Bachelor Bike Park" loading="lazy" allowfullscreen></iframe></div>
+          <span class="tbl-video-label">POV: Redline (full pull, 2025)</span>
+        </div>
+      </div>
+      <div class="tbl-row has-video">
+        <div class="col-name">The Lair @ Phil's Trailhead<span class="tag">04 — Dirt Jumps, Advanced</span></div>
+        <div>
+          <p class="meta-line">Phil's Trailhead, off Skyliners Rd, via Marvin's Garden · Progression-based freeride jump lines, maintained by COTA</p>
+          <p>Widely considered the undisputed premier dirt-jumping spot in Bend — a progression-based freeride area built with backhoes and volunteer labor, ranging from an "easily rollable" line up through a double-black, pro-only line for serious airtime. It's public land, built and maintained by the Central Oregon Trail Alliance (COTA) with USFS permission.</p>
+          <ul>
+            <li>Jump lines are downhill-only; ride the climbing route (Marvin's Garden) to get back to the start.</li>
+            <li>Helmets required, body armor recommended — this is a genuine freeride area, not a beginner pump track.</li>
+            <li>Conditions vary — check <a href="https://bendtrails.org/trail/the-lair/" target="_blank">bendtrails.org</a> for recent rideability reports before heading out.</li>
+          </ul>
+          <a class="tbl-link" href="https://bendtrails.org/trail/the-lair/" target="_blank">→ bendtrails.org: The Lair</a>
+        </div>
+        <div>
+          <div class="tbl-video"><iframe src="https://www.youtube.com/embed/FIbR7sOcF7g" title="MTB riding POV at The Lair, Bend, Oregon" loading="lazy" allowfullscreen></iframe></div>
+          <span class="tbl-video-label">POV: The Lair</span>
+        </div>
+      </div>
+      <div class="tbl-row has-video">
+        <div class="col-name">Wanoga Sno-Park Trails<span class="tag">05 — Downhill Singletrack</span></div>
+        <div>
+          <p class="meta-line">Cascade Lakes Hwy, ~14–15 miles SW of Bend · Key trails: Funner · Tiddlywinks · Tyler's Traverse · Storm King</p>
+          <p>A sno-park that doubles as the trailhead for one of Bend's best gravity-trail networks. Funner and Tiddlywinks are the classics — intermediate-to-advanced singletrack with banked turns, boulders, and jumps, best ridden as a climb-one/descend-the-other loop (about 13 miles round trip). COTA has also been adding a dedicated system of shorter, lappable downhill runs on the butte behind the parking lot, built with input from pro freeride riders including Cam Zink, Carson Storch, and Cam McCaul.</p>
+          <ul>
+            <li>Both Funner and Tiddlywinks are built for descending — climbing either feels awkward; consider a shuttle (Cog Wild) if you want more laps and less climbing.</li>
+            <li>Rock sections have sharp lava rock — expect it to hurt more than dirt if you go down.</li>
+            <li>Good adaptive-rider access on several of the nearby trails (Royal Flush, Tiddlywinks).</li>
+          </ul>
+          <a class="tbl-link" href="https://visitbend.com/journal/downhill-mountain-biking-bend-wanoga-trails/" target="_blank">→ Visit Bend: Wanoga downhill trails</a>
+        </div>
+        <div>
+          <div class="tbl-video"><iframe src="https://www.youtube.com/embed/-jHRoloj0Lw" title="Tiddlywinks jump line POV, Wanoga, Bend, Oregon" loading="lazy" allowfullscreen></iframe></div>
+          <span class="tbl-video-label">POV: Tiddlywinks</span>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="tbl-sub">Racing along the way</h3>
+    <p class="tbl-subdek">Other USA BMX tracks sitting more or less on the San Jose → Bend corridor, in case a practice night or local race lines up with a stop. Schedules for a few of these are inferred from event calendars rather than a published weekly page — worth a quick call before detouring.</p>
+    <div class="tbl">
+      <div class="tbl-row">
+        <div class="col-name">Elkhorn BMX<span class="tag">Sacramento area</span></div>
+        <p>848 Elkhorn Blvd, Rio Linda, CA. Mon practice 6–8pm; Tue reg 6–7pm + race ASAP; Fri reg 6:30–7:30pm + race ASAP.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Oak Creek BMX<span class="tag">Sacramento area</span></div>
+        <p>648 Riverside Ave, Roseville, CA. Race Wed &amp; Sat; practice Thu (inferred from calendar).</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Boomtown BMX<span class="tag">Redding/Shasta Lake</span></div>
+        <p>17760 Shasta Dam Blvd, Shasta Lake, CA. Wed practice 6–8pm; Fri race, reg 6:30–7:30pm; Sun race, reg 10–11am.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Klamath Falls BMX</div>
+        <p>3868 Anderson Ave, Klamath Falls, OR. Race Wed, Fri, Sun (inferred from calendar).</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Smith Rock BMX<span class="tag">Used this trip — Tue 7/28</span></div>
+        <p>1935 NE Maple, Redmond, OR, ~25 min from Bend. Race Tue &amp; Fri (inferred from calendar).</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Bend BMX<span class="tag">Used this trip — Thu 7/30</span></div>
+        <p>21690 Neff Rd, Bend, OR. Local race Mon &amp; Thu; practice $5 / racing $10.</p>
+      </div>
+    </div>
+
+    <h3 class="tbl-sub">Bike shops</h3>
+    <div class="tbl">
+      <div class="tbl-row">
+        <div class="col-name">Pine Mountain Sports</div>
+        <p>Locally voted best bike shop in Bend; demo and rental fleet, service on-site.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Sagebrush Cycles</div>
+        <p>Downtown, Pivot demo/rental fleet, lifetime service on bikes they sell — plus a coffee bar next door.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">The Hub Cyclery</div>
+        <p>Wide rental range (mountain, fat, cruiser) plus full service department.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Project Bike</div>
+        <p>Sales, service, and rentals — known for fast turnaround if something needs a same-day fix.</p>
+      </div>
+    </div>
+
+    <h3 class="tbl-sub">Food &amp; fuel</h3>
+    <div class="tbl">
+      <div class="tbl-row">
+        <div class="col-name">Parrilla Grill</div>
+        <p>Casual wraps and bowls — easy, fast, kid-friendly.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">El Sancho</div>
+        <p>Tacos and Baja-style plates; good post-ride refuel.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Primal Cuts</div>
+        <p>Meats, fine foods, casual plates — good for building a picnic for a bike park day.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Jackson's Corner</div>
+        <p>Wood-fired, ingredient-driven, relaxed enough for the whole crew after a long day.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Finding the Line — Bend Trip Guide</span>
+    <span>Confirm all dates, hours, and prices directly with each venue before travel</span>
+  </footer>
+</div>
+
+<button class="print-btn" onclick="window.print()">Print / Save PDF</button>
+
+<script>
+  var tabBtns = document.querySelectorAll('.tab-btn');
+  var tabPanels = document.querySelectorAll('.tab-panel');
+  tabBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      tabBtns.forEach(function(b){ b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+      tabPanels.forEach(function(p){ p.classList.remove('active'); });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected','true');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
