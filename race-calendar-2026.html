@@ -2434,6 +2434,38 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
   });
 });
 
+// Recompute which events are past/next based on the real current date —
+// the .past/.next-event classes and "Next" badge baked into the HTML at
+// generation time go stale as soon as the page is viewed on a later day.
+function recomputePastAndNext() {
+  const t = today();
+  const rows = document.querySelectorAll('.event-row');
+  let nextRow = null;
+  rows.forEach((row, i) => {
+    const ev = EVENTS_JSON[i];
+    if (!ev) return;
+    const isPast = parseDate(ev.end) < t;
+    row.classList.toggle('past', isPast);
+
+    const oldBadge = row.querySelector('.next-badge');
+    if (oldBadge) oldBadge.remove();
+    row.classList.remove('next-event');
+
+    if (!nextRow && !isPast && !ev.cancelled) nextRow = row;
+  });
+  if (nextRow) {
+    nextRow.classList.add('next-event');
+    const badges = nextRow.querySelector('.event-badges');
+    if (badges) {
+      const span = document.createElement('span');
+      span.className = 'next-badge';
+      span.textContent = 'Next';
+      badges.insertBefore(span, badges.firstChild);
+    }
+  }
+}
+recomputePastAndNext();
+
 // Scroll to first upcoming event
 requestAnimationFrame(() => {
   requestAnimationFrame(() => {
