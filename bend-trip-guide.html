@@ -113,6 +113,18 @@
     display:block;margin-top:6px;font-family:'IBM Plex Mono',monospace;
     font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--pine-dark);
   }
+  .tbl-row.has-photo{grid-template-columns:200px 1fr 220px;}
+  .tbl-photo{
+    width:100%;aspect-ratio:4/3;
+    border-radius:4px;overflow:hidden;border:1px solid var(--line);
+    background:#000;
+  }
+  .tbl-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+  .tbl-photo-label{
+    display:block;margin-top:6px;font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--pine-dark);
+  }
+  .tbl-photo-label a{color:inherit;}
   .tbl-row .col-name{
     font-family:'Fraunces',serif;font-weight:600;font-size:16.5px;
   }
@@ -205,6 +217,7 @@
   @media (max-width:640px){
     .tbl-row{grid-template-columns:1fr;gap:4px;}
     .tbl-row.has-video{grid-template-columns:1fr;}
+    .tbl-row.has-photo{grid-template-columns:1fr;}
     .tbl-row .col-name .tag{margin-bottom:2px;}
     .map-embed{aspect-ratio:4/3;}
     .map-embed.map-embed-sm{aspect-ratio:1/1;min-height:0;}
@@ -409,32 +422,74 @@
   <section id="panel-scenic" class="tab-panel" role="tabpanel">
     <div class="signpost">3 · On The Way</div>
     <h2 class="section-title">Scenic stops, San Jose → Bend</h2>
-    <p class="section-dek">Breaking up a 9–10 hour drive for a family — these sit more or less along I-5 / Hwy 97. Mt. Shasta is the pick for the Mon 7/27 overnight stop.</p>
+    <p class="section-dek">Breaking up a 9–10 hour drive for a family — these sit more or less along I-5 / Hwy 97. The actual Day 1 overnight is in Redding (see Accommodations) — these are stops to stretch legs, eat, and take in some views along the way.</p>
 
     <div class="tbl">
-      <div class="tbl-row">
+      <div class="tbl-row has-photo">
         <div class="col-name">Lake Shasta Vista Point</div>
-        <p>Quick overlook stop, good for a leg-stretch and a photo.</p>
+        <div>
+          <p>Quick overlook stop, good for a leg-stretch and a photo — the O'Brien Rest Area off I-5 has the classic Shasta Lake and Pit River Bridge view.</p>
+          <a class="tbl-link" href="https://en.wikipedia.org/wiki/Shasta_Lake" target="_blank">→ Wikipedia: Shasta Lake</a>
+        </div>
+        <div>
+          <div class="tbl-photo"><img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Shasta_Lake_2016_Pit_River_Bridge.jpg" alt="Shasta Lake and the Pit River Bridge, seen from I-5" loading="lazy"></div>
+          <span class="tbl-photo-label"><a href="https://commons.wikimedia.org/wiki/File:Shasta_Lake_2016_Pit_River_Bridge.jpg" target="_blank">Photo: Florence Low / CA DWR · public domain</a></span>
+        </div>
       </div>
-      <div class="tbl-row">
-        <div class="col-name">Mount Shasta<span class="tag">Overnight stop</span></div>
-        <p>Roughly splits the drive in half — small-town stop with mountain views, good spot to break up the trip on Day 1.</p>
+      <div class="tbl-row has-photo">
+        <div class="col-name">Mount Shasta<span class="tag">Drive-through stop</span></div>
+        <div>
+          <p>Roughly splits the drive in half — small-town stop with mountain views, good for a coffee break or a stretch before continuing on to Redding.</p>
+          <a class="tbl-link" href="https://www.visitmtshasta.com/" target="_blank">→ visitmtshasta.com</a>
+        </div>
+        <div>
+          <div class="tbl-photo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Mount_Shasta%2C_California.jpg/960px-Mount_Shasta%2C_California.jpg" alt="Mount Shasta, California" loading="lazy"></div>
+          <span class="tbl-photo-label"><a href="https://commons.wikimedia.org/wiki/File:Mount_Shasta,_California.jpg" target="_blank">Photo: Roger Wollstadt · CC BY-SA 2.0</a></span>
+        </div>
       </div>
-      <div class="tbl-row">
+      <div class="tbl-row has-photo">
         <div class="col-name">Klamath Falls</div>
-        <p>Natural lunch/fuel stop about two-thirds of the way in. Klamath Falls BMX races Wed/Fri/Sun if the timing ever lines up.</p>
+        <div>
+          <p>Natural lunch/fuel stop about two-thirds of the way in. Klamath Falls BMX races Wed/Fri/Sun if the timing ever lines up.</p>
+          <a class="tbl-link" href="https://www.discoverklamath.com/" target="_blank">→ discoverklamath.com</a>
+        </div>
+        <div>
+          <div class="tbl-photo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Klamath_Falls_downtown.JPG/960px-Klamath_Falls_downtown.JPG" alt="Downtown Klamath Falls, Oregon" loading="lazy"></div>
+          <span class="tbl-photo-label"><a href="https://commons.wikimedia.org/wiki/File:Klamath_Falls_downtown.JPG" target="_blank">Photo: Bobjgalindo · CC BY-SA 4.0</a></span>
+        </div>
       </div>
-      <div class="tbl-row">
+      <div class="tbl-row has-photo">
         <div class="col-name">Collier Memorial State Park</div>
-        <p>Logging history museum + a shaded rest stop along Hwy 97.</p>
+        <div>
+          <p>Outdoor logging history museum — one of the largest antique logging-equipment collections around — plus a shaded rest stop along Hwy 97 where the Williamson River and Spring Creek meet.</p>
+          <a class="tbl-link" href="https://stateparks.oregon.gov/index.cfm?do=park.profile&parkId=165" target="_blank">→ Oregon State Parks: Collier Memorial</a>
+        </div>
+        <div>
+          <div class="tbl-photo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Wood_Burning_Locomotive_Collier_Memorial_State_Park.jpg/960px-Wood_Burning_Locomotive_Collier_Memorial_State_Park.jpg" alt="Wood-burning logging locomotive on display at Collier Memorial State Park" loading="lazy"></div>
+          <span class="tbl-photo-label"><a href="https://commons.wikimedia.org/wiki/File:Wood_Burning_Locomotive_Collier_Memorial_State_Park.jpg" target="_blank">Photo: Roberto Galindo · CC BY-SA 4.0</a></span>
+        </div>
       </div>
-      <div class="tbl-row">
+      <div class="tbl-row has-photo">
         <div class="col-name">Peter Skene Ogden Scenic Viewpoint</div>
-        <p>Short walk to a dramatic canyon overlook, close to Bend.</p>
+        <div>
+          <p>Short walk to a dramatic overlook of the Crooked River canyon and its railroad/highway bridges, close to Bend. Leash pets and mind the cliff edges.</p>
+          <a class="tbl-link" href="https://stateparks.oregon.gov/index.cfm?do=park.profile&parkId=35" target="_blank">→ Oregon State Parks: Peter Skene Ogden</a>
+        </div>
+        <div>
+          <div class="tbl-photo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Peter_Skene_Ogden_State_Scenic_Viewpoint_and_Rex_T_Barber_Bridge.jpg/960px-Peter_Skene_Ogden_State_Scenic_Viewpoint_and_Rex_T_Barber_Bridge.jpg" alt="Peter Skene Ogden State Scenic Viewpoint overlooking the Crooked River canyon and Rex T. Barber Bridge" loading="lazy"></div>
+          <span class="tbl-photo-label"><a href="https://commons.wikimedia.org/wiki/File:Peter_Skene_Ogden_State_Scenic_Viewpoint_and_Rex_T_Barber_Bridge.jpg" target="_blank">Photo: Bobjgalindo · CC BY-SA 4.0</a></span>
+        </div>
       </div>
-      <div class="tbl-row">
+      <div class="tbl-row has-photo">
         <div class="col-name">Smith Rock State Park<span class="tag">Tue 7/28 race stop</span></div>
-        <p>Iconic canyon and climbing destination, right by Smith Rock BMX (1935 NE Maple, Redmond) — races Tuesdays and Fridays, ~25 min from Bend.</p>
+        <div>
+          <p>Iconic canyon and climbing destination, right by Smith Rock BMX (1935 NE Maple, Redmond) — races Tuesdays and Fridays, ~25 min from Bend.</p>
+          <a class="tbl-link" href="https://stateparks.oregon.gov/index.cfm?do=park.profile&parkId=36" target="_blank">→ Oregon State Parks: Smith Rock</a>
+        </div>
+        <div>
+          <div class="tbl-photo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Smith_Rock_State_Park_-_Oregon_-_6015772054.jpg/960px-Smith_Rock_State_Park_-_Oregon_-_6015772054.jpg" alt="Smith Rock State Park canyon, Oregon" loading="lazy"></div>
+          <span class="tbl-photo-label"><a href="https://commons.wikimedia.org/wiki/File:Smith_Rock_State_Park_-_Oregon_-_6015772054.jpg" target="_blank">Photo: Doug Kerr · CC BY-SA 2.0</a></span>
+        </div>
       </div>
     </div>
   </section>
