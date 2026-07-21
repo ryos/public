@@ -113,18 +113,6 @@
     display:block;margin-top:6px;font-family:'IBM Plex Mono',monospace;
     font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--pine-dark);
   }
-  .tbl-row.has-photo{grid-template-columns:200px 1fr 220px;}
-  .tbl-photo{
-    width:100%;aspect-ratio:4/3;
-    border-radius:4px;overflow:hidden;border:1px solid var(--line);
-    background:#000;
-  }
-  .tbl-photo img{width:100%;height:100%;object-fit:cover;display:block;}
-  .tbl-photo-label{
-    display:block;margin-top:6px;font-family:'IBM Plex Mono',monospace;
-    font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--pine-dark);
-  }
-  .tbl-photo-label a{color:inherit;}
   .tbl-row .col-name{
     font-family:'Fraunces',serif;font-weight:600;font-size:16.5px;
   }
@@ -163,6 +151,30 @@
     display:block;font-family:'IBM Plex Mono',monospace;font-size:12px;
     text-transform:uppercase;letter-spacing:.08em;color:var(--pine-dark);
     margin:4px 0 8px;
+  }
+
+  /* ---------- CONDITIONS DASHBOARD ---------- */
+  .cond-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:18px;
+    margin-bottom:28px;
+  }
+  .cond-card{
+    background:var(--card);border:1px solid var(--line);border-radius:3px;
+    padding:16px 18px 18px;
+  }
+  .cond-title{
+    font-family:'Fraunces',serif;font-weight:600;font-size:16.5px;margin:0 0 10px;
+  }
+  .cond-embed{
+    width:100%;aspect-ratio:4/3;
+    border-radius:4px;overflow:hidden;border:1px solid var(--line);
+    background:#f5f1e6;margin-bottom:8px;
+  }
+  .cond-embed iframe{width:100%;height:100%;border:0;display:block;}
+  .cond-embed.cond-embed-aqi{aspect-ratio:1/1;max-width:280px;margin:0 auto 8px;}
+  .cond-note{margin:0;font-size:13px;color:#4a4f42;}
+  @media (max-width:640px){
+    .cond-grid{grid-template-columns:1fr;}
   }
 
   /* ---------- TAB MENU (hamburger + dropdown) ---------- */
@@ -217,7 +229,6 @@
   @media (max-width:640px){
     .tbl-row{grid-template-columns:1fr;gap:4px;}
     .tbl-row.has-video{grid-template-columns:1fr;}
-    .tbl-row.has-photo{grid-template-columns:1fr;}
     .tbl-row .col-name .tag{margin-bottom:2px;}
     .map-embed{aspect-ratio:4/3;}
     .map-embed.map-embed-sm{aspect-ratio:1/1;min-height:0;}
@@ -261,6 +272,8 @@
     .tbl-row.has-video{grid-template-columns:200px 1fr;}
     .tbl-video, .tbl-video-label{display:none;}
     .map-embed{display:none;}
+    .cond-embed{display:none;}
+    .cond-card{border:1px solid #999;}
   }
 </style>
 </head>
@@ -276,7 +289,7 @@
       <circle class="node" cx="20" cy="60" r="4"/>
       <text x="10" y="80" class="city">San Jose</text>
       <circle class="node" cx="250" cy="60" r="3.5"/>
-      <text x="230" y="80">Mt. Shasta</text>
+      <text x="230" y="80">Redding</text>
       <circle class="node" cx="470" cy="34" r="3.5"/>
       <text x="440" y="20">Klamath Falls</text>
       <circle class="node" cx="650" cy="45" r="3.5"/>
@@ -303,6 +316,8 @@
     <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-details" data-tab="panel-details">4 · Bike Park &amp; Shop Info</button>
     <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-food" data-tab="panel-food">5 · Food &amp; Fuel</button>
     <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-relax" data-tab="panel-relax">6 · Mom &amp; Grandma</button>
+    <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-misc" data-tab="panel-misc">7 · Miscellaneous</button>
+    <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-conditions" data-tab="panel-conditions">8 · Conditions</button>
   </div>
 
   <!-- 1. ITINERARY -->
@@ -317,9 +332,9 @@
         <div>
           <p><strong>Travel</strong></p>
           <ul>
-            <li>Early morning departure from West San Jose.</li>
-            <li>Drive to a scenic overnight stop — Mt. Shasta is the natural pick, roughly splitting the full drive in half.</li>
-            <li>This means skipping Bend BMX's Monday race night, in exchange for a slower, two-day drive.</li>
+            <li>Morning departure from West San Jose — a shorter first day, ~250 mi / ~4 hrs to Redding.</li>
+            <li>Overnight in Redding, CA — booked at The Cottage w/ a garden view.</li>
+            <li>This means skipping Bend BMX's Monday race night, in exchange for a slower, two-day drive. Boomtown BMX (Redding/Shasta Lake) doesn't practice or race on Mondays, so no bonus track night on arrival.</li>
           </ul>
         </div>
       </div>
@@ -328,9 +343,11 @@
         <div>
           <p><strong>Travel + Smith Rock BMX</strong></p>
           <ul>
-            <li>Continue Mt. Shasta → Bend (~5 hrs), with stops (Klamath Falls, Collier Memorial, Peter Skene Ogden).</li>
+            <li>The longer driving day — Redding → Bend is ~279 mi / ~5.5 hrs (about an hour more than the old Mt. Shasta → Bend leg). Worth an earlier start to protect the evening's race time.</li>
+            <li>Morning stops: Lake Shasta Vista Point, then Mount Shasta (~1 hr up the road) for coffee — it's directly on the route, not a detour.</li>
+            <li>Continue toward Bend, with stops at Klamath Falls, Collier Memorial, and Peter Skene Ogden.</li>
             <li>Smith Rock BMX (Redmond, ~25 min from Bend) races Tuesdays — a bonus track on arrival day, right on the way in.</li>
-            <li>Settle into the Airbnb after.</li>
+            <li>Settle into the Airbnb (Edgecliff MCM) after.</li>
           </ul>
         </div>
       </div>
@@ -372,7 +389,7 @@
           <p><strong>Travel Home</strong></p>
           <ul>
             <li>Head home before the Aug 1–2 Bend BMX qualifier weekend gets underway.</li>
-            <li>Split the return drive at Mt. Shasta again if a two-day trip home feels better than one long push.</li>
+            <li>Split the return drive at Redding or Mt. Shasta again if a two-day trip home feels better than one long push.</li>
           </ul>
         </div>
       </div>
@@ -385,35 +402,21 @@
   <section id="panel-accommodations" class="tab-panel" role="tabpanel">
     <div class="signpost">2 · Basecamp</div>
     <h2 class="section-title">Accommodations</h2>
-    <p class="section-dek">Both stays are booked. One overnight in Redding on the drive up, then the full stay at a house in Bend. House manuals below are redacted summaries — door codes and WiFi passwords are sent directly by each host shortly before check-in, not published here.</p>
+    <p class="section-dek">Both legs booked — Redding for the Mon 7/27 overnight split, Bend for the week.</p>
 
-    <h3 class="tbl-sub">Night 1 — Redding, CA<span class="sub-note">Mon 7/27 → Tue 7/28</span></h3>
-    <div class="map-embed map-embed-sm">
-      <iframe src="https://maps.google.com/maps?q=5439+Valleyridge+Drive,+Redding,+CA+96003&output=embed" title="Map of The Cottage, 5439 Valleyridge Drive, Redding, CA" loading="lazy"></iframe>
-    </div>
+    <h3 class="tbl-sub">Redding, CA <span class="sub-note">overnight stop, Mon 7/27</span></h3>
     <div class="tbl">
       <div class="tbl-row">
-        <div class="col-name">The Cottage w/ a Garden View<span class="tag">Hosted by Cathy</span></div>
-        <div>
-          <p class="meta-line">5439 Valleyridge Drive, Redding, CA 96003 · Check-in Mon 7/27, 3:00 PM · Checkout Tue 7/28, 11:00 AM</p>
-          <p>Self-check-in via keypad, about a mile off I-5 on the north side of Redding. One-night stop to split the drive up from San Jose.</p>
-          <a class="tbl-link" href="bend-trip-guide/redding-house-manual.pdf" target="_blank">→ House manual &amp; rules (PDF)</a>
-        </div>
+        <div class="col-name">The Cottage w/ a garden view<span class="tag">Booked ✓</span></div>
+        <p>Confirmed Airbnb booking for the Day 1 overnight stop. <a class="tbl-link" href="https://www.airbnb.com/rooms/24087648" target="_blank">→ View listing on Airbnb</a></p>
       </div>
     </div>
 
-    <h3 class="tbl-sub">Bend basecamp<span class="sub-note">Tue 7/28 → Sat 8/1</span></h3>
-    <div class="map-embed map-embed-sm">
-      <iframe src="https://maps.google.com/maps?q=1649+Northeast+Edgecliff+Circle,+Bend,+OR+97701&output=embed" title="Map of Edgecliff MCM, 1649 NE Edgecliff Circle, Bend, OR" loading="lazy"></iframe>
-    </div>
+    <h3 class="tbl-sub">Bend, OR <span class="sub-note">basecamp, Tue 7/28–Sat 8/1</span></h3>
     <div class="tbl">
       <div class="tbl-row">
-        <div class="col-name">Edgecliff MCM<span class="tag">Hosted by Greg</span></div>
-        <div>
-          <p class="meta-line">1649 NE Edgecliff Circle, Bend, OR 97701 · Check-in Tue 7/28, 4:00 PM · Checkout Sat 8/1, 11:00 AM</p>
-          <p>Self-check-in via keypad — message the host for the code before arrival. Sits on an acre; the host lives in a separate apartment on the property with its own entrance. Quiet hours 9pm–9am, park only in the designated diagonal spaces (not the cul-de-sac), no smoking in the house.</p>
-          <a class="tbl-link" href="bend-trip-guide/bend-house-manual.pdf" target="_blank">→ House manual &amp; rules (PDF)</a>
-        </div>
+        <div class="col-name">Edgecliff MCM<span class="tag">Booked ✓</span></div>
+        <p>Confirmed Airbnb booking for the Bend leg of the trip. <a class="tbl-link" href="https://www.airbnb.com/rooms/19546137" target="_blank">→ View listing on Airbnb</a></p>
       </div>
     </div>
   </section>
@@ -422,74 +425,32 @@
   <section id="panel-scenic" class="tab-panel" role="tabpanel">
     <div class="signpost">3 · On The Way</div>
     <h2 class="section-title">Scenic stops, San Jose → Bend</h2>
-    <p class="section-dek">Breaking up a 9–10 hour drive for a family — these sit more or less along I-5 / Hwy 97. The actual Day 1 overnight is in Redding (see Accommodations) — these are stops to stretch legs, eat, and take in some views along the way.</p>
+    <p class="section-dek">Breaking up a 9–10 hour drive for a family — these sit more or less along I-5 / Hwy 97. Redding is the booked Mon 7/27 overnight stop; Mount Shasta is now a Tue 7/28 morning stop on the way to Bend.</p>
 
     <div class="tbl">
-      <div class="tbl-row has-photo">
-        <div class="col-name">Lake Shasta Vista Point</div>
-        <div>
-          <p>Quick overlook stop, good for a leg-stretch and a photo — the O'Brien Rest Area off I-5 has the classic Shasta Lake and Pit River Bridge view.</p>
-          <a class="tbl-link" href="https://en.wikipedia.org/wiki/Shasta_Lake" target="_blank">→ Wikipedia: Shasta Lake</a>
-        </div>
-        <div>
-          <div class="tbl-photo"><img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Shasta_Lake_2016_Pit_River_Bridge.jpg" alt="Shasta Lake and the Pit River Bridge, seen from I-5" loading="lazy"></div>
-          <span class="tbl-photo-label"><a href="https://commons.wikimedia.org/wiki/File:Shasta_Lake_2016_Pit_River_Bridge.jpg" target="_blank">Photo: Florence Low / CA DWR · public domain</a></span>
-        </div>
+      <div class="tbl-row">
+        <div class="col-name">Lake Shasta Vista Point<span class="tag">Tue 7/28 morning stop</span></div>
+        <p>Quick overlook stop just north of Redding, good for a leg-stretch and a photo before the long Day 2 drive.</p>
       </div>
-      <div class="tbl-row has-photo">
-        <div class="col-name">Mount Shasta<span class="tag">Drive-through stop</span></div>
-        <div>
-          <p>Roughly splits the drive in half — small-town stop with mountain views, good for a coffee break or a stretch before continuing on to Redding.</p>
-          <a class="tbl-link" href="https://www.visitmtshasta.com/" target="_blank">→ visitmtshasta.com</a>
-        </div>
-        <div>
-          <div class="tbl-photo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Mount_Shasta%2C_California.jpg/960px-Mount_Shasta%2C_California.jpg" alt="Mount Shasta, California" loading="lazy"></div>
-          <span class="tbl-photo-label"><a href="https://commons.wikimedia.org/wiki/File:Mount_Shasta,_California.jpg" target="_blank">Photo: Roger Wollstadt · CC BY-SA 2.0</a></span>
-        </div>
+      <div class="tbl-row">
+        <div class="col-name">Mount Shasta<span class="tag">Tue 7/28 morning stop</span></div>
+        <p>About an hour up the road from Redding, directly on the route to Bend — small-town stop with mountain views, good for coffee before the push toward Klamath Falls.</p>
       </div>
-      <div class="tbl-row has-photo">
+      <div class="tbl-row">
         <div class="col-name">Klamath Falls</div>
-        <div>
-          <p>Natural lunch/fuel stop about two-thirds of the way in. Klamath Falls BMX races Wed/Fri/Sun if the timing ever lines up.</p>
-          <a class="tbl-link" href="https://www.discoverklamath.com/" target="_blank">→ discoverklamath.com</a>
-        </div>
-        <div>
-          <div class="tbl-photo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Klamath_Falls_downtown.JPG/960px-Klamath_Falls_downtown.JPG" alt="Downtown Klamath Falls, Oregon" loading="lazy"></div>
-          <span class="tbl-photo-label"><a href="https://commons.wikimedia.org/wiki/File:Klamath_Falls_downtown.JPG" target="_blank">Photo: Bobjgalindo · CC BY-SA 4.0</a></span>
-        </div>
+        <p>Natural lunch/fuel stop about two-thirds of the way in. Klamath Falls BMX races Wed/Fri/Sun if the timing ever lines up.</p>
       </div>
-      <div class="tbl-row has-photo">
+      <div class="tbl-row">
         <div class="col-name">Collier Memorial State Park</div>
-        <div>
-          <p>Outdoor logging history museum — one of the largest antique logging-equipment collections around — plus a shaded rest stop along Hwy 97 where the Williamson River and Spring Creek meet.</p>
-          <a class="tbl-link" href="https://stateparks.oregon.gov/index.cfm?do=park.profile&parkId=165" target="_blank">→ Oregon State Parks: Collier Memorial</a>
-        </div>
-        <div>
-          <div class="tbl-photo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Wood_Burning_Locomotive_Collier_Memorial_State_Park.jpg/960px-Wood_Burning_Locomotive_Collier_Memorial_State_Park.jpg" alt="Wood-burning logging locomotive on display at Collier Memorial State Park" loading="lazy"></div>
-          <span class="tbl-photo-label"><a href="https://commons.wikimedia.org/wiki/File:Wood_Burning_Locomotive_Collier_Memorial_State_Park.jpg" target="_blank">Photo: Roberto Galindo · CC BY-SA 4.0</a></span>
-        </div>
+        <p>Logging history museum + a shaded rest stop along Hwy 97.</p>
       </div>
-      <div class="tbl-row has-photo">
+      <div class="tbl-row">
         <div class="col-name">Peter Skene Ogden Scenic Viewpoint</div>
-        <div>
-          <p>Short walk to a dramatic overlook of the Crooked River canyon and its railroad/highway bridges, close to Bend. Leash pets and mind the cliff edges.</p>
-          <a class="tbl-link" href="https://stateparks.oregon.gov/index.cfm?do=park.profile&parkId=35" target="_blank">→ Oregon State Parks: Peter Skene Ogden</a>
-        </div>
-        <div>
-          <div class="tbl-photo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Peter_Skene_Ogden_State_Scenic_Viewpoint_and_Rex_T_Barber_Bridge.jpg/960px-Peter_Skene_Ogden_State_Scenic_Viewpoint_and_Rex_T_Barber_Bridge.jpg" alt="Peter Skene Ogden State Scenic Viewpoint overlooking the Crooked River canyon and Rex T. Barber Bridge" loading="lazy"></div>
-          <span class="tbl-photo-label"><a href="https://commons.wikimedia.org/wiki/File:Peter_Skene_Ogden_State_Scenic_Viewpoint_and_Rex_T_Barber_Bridge.jpg" target="_blank">Photo: Bobjgalindo · CC BY-SA 4.0</a></span>
-        </div>
+        <p>Short walk to a dramatic canyon overlook, close to Bend.</p>
       </div>
-      <div class="tbl-row has-photo">
+      <div class="tbl-row">
         <div class="col-name">Smith Rock State Park<span class="tag">Tue 7/28 race stop</span></div>
-        <div>
-          <p>Iconic canyon and climbing destination, right by Smith Rock BMX (1935 NE Maple, Redmond) — races Tuesdays and Fridays, ~25 min from Bend.</p>
-          <a class="tbl-link" href="https://stateparks.oregon.gov/index.cfm?do=park.profile&parkId=36" target="_blank">→ Oregon State Parks: Smith Rock</a>
-        </div>
-        <div>
-          <div class="tbl-photo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Smith_Rock_State_Park_-_Oregon_-_6015772054.jpg/960px-Smith_Rock_State_Park_-_Oregon_-_6015772054.jpg" alt="Smith Rock State Park canyon, Oregon" loading="lazy"></div>
-          <span class="tbl-photo-label"><a href="https://commons.wikimedia.org/wiki/File:Smith_Rock_State_Park_-_Oregon_-_6015772054.jpg" target="_blank">Photo: Doug Kerr · CC BY-SA 2.0</a></span>
-        </div>
+        <p>Iconic canyon and climbing destination, right by Smith Rock BMX (1935 NE Maple, Redmond) — races Tuesdays and Fridays, ~25 min from Bend.</p>
       </div>
     </div>
   </section>
@@ -644,52 +605,60 @@
   <section id="panel-food" class="tab-panel" role="tabpanel">
     <div class="signpost">5 · Fuel Stops</div>
     <h2 class="section-title">Food &amp; fuel</h2>
-    <p class="section-dek">Highly rated breakfast, lunch, and dinner picks for the two towns you'll actually be eating in — Mount Shasta on the Day 1 overnight split, and Bend for the rest of the week. Each mini map drops a pin on that meal's spots.</p>
+    <p class="section-dek">Highly rated breakfast, lunch, and dinner picks for the towns you'll actually be eating in — Redding on the Day 1 overnight split, a coffee stop in Mount Shasta on the Day 2 morning drive-through, and Bend for the rest of the week. Each mini map drops a pin on that meal's spots.</p>
 
-    <h3 class="tbl-sub">Mount Shasta, CA <span class="sub-note">overnight stop, Mon 7/27</span></h3>
+    <h3 class="tbl-sub">Redding, CA <span class="sub-note">overnight stop, Mon 7/27</span></h3>
 
     <span class="tbl-meal">Breakfast</span>
     <div class="map-embed map-embed-sm">
-      <iframe src="https://maps.google.com/maps?saddr=Seven+Suns+Coffee+%26+Cafe%2C+Mount+Shasta%2C+CA&daddr=Black+Bear+Diner%2C+Mount+Shasta%2C+CA&output=embed" title="Map of breakfast picks in Mount Shasta, CA" loading="lazy"></iframe>
+      <iframe src="https://maps.google.com/maps?saddr=Trendy%27s%2C+Redding%2C+CA&daddr=Theory+Coffee+Roasters%2C+Redding%2C+CA&output=embed" title="Map of breakfast picks in Redding, CA" loading="lazy"></iframe>
     </div>
     <div class="tbl">
       <div class="tbl-row">
-        <div class="col-name">Seven Suns Coffee &amp; Cafe</div>
-        <p>Beloved local staple for handcrafted coffee and a satisfying breakfast/lunch menu in a relaxed, community vibe — an easy first stop on the road.</p>
+        <div class="col-name">Trendy's<span class="tag">4.6★</span></div>
+        <p>Classic breakfast/brunch spot, 1730 Gold St — sandwiches and burgers too if anyone wants something heartier before the long Day 2 drive.</p>
       </div>
       <div class="tbl-row">
-        <div class="col-name">Black Bear Diner</div>
-        <p>Classic diner comfort — hearty portions, easy for kids, a reliable pick before an early departure.</p>
+        <div class="col-name">Theory Coffee Roasters<span class="tag">4.3★</span></div>
+        <p>Local roaster and cafe on Shasta St — good coffee-and-pastry option for a faster start.</p>
       </div>
     </div>
 
     <span class="tbl-meal">Lunch</span>
     <div class="map-embed map-embed-sm">
-      <iframe src="https://maps.google.com/maps?saddr=Bistro+107%2C+Mount+Shasta%2C+CA&daddr=Casa+Ramos+Mexican+Restaurant%2C+Mount+Shasta%2C+CA&output=embed" title="Map of lunch picks in Mount Shasta, CA" loading="lazy"></iframe>
+      <iframe src="https://maps.google.com/maps?q=Bartels+Giant+Burger%2C+Redding%2C+CA&output=embed" title="Map of lunch pick in Redding, CA" loading="lazy"></iframe>
     </div>
     <div class="tbl">
       <div class="tbl-row">
-        <div class="col-name">Bistro 107</div>
-        <p>Neighborhood bistro with burgers, sandwiches, and salads — the "wino burger" and pulled pork get called out, plus deck seating.</p>
-      </div>
-      <div class="tbl-row">
-        <div class="col-name">Casa Ramos Mexican Restaurant</div>
-        <p>Family-owned, generous portions of enchiladas, chile rellenos, and tacos al carbón — full bar too.</p>
+        <div class="col-name">Bartels Giant Burger</div>
+        <p>NorCal burger-chain staple — fresh, made-to-order, fast. Easy first stop after rolling into town, since the shorter Day 1 drive should land you here with time to spare.</p>
       </div>
     </div>
 
     <span class="tbl-meal">Dinner</span>
     <div class="map-embed map-embed-sm">
-      <iframe src="https://maps.google.com/maps?saddr=Mount+Shasta+Craft+House%2C+Mount+Shasta%2C+CA&daddr=Pipeline+Craft+Taps+%26+Kitchen%2C+Mount+Shasta%2C+CA&output=embed" title="Map of dinner picks in Mount Shasta, CA" loading="lazy"></iframe>
+      <iframe src="https://maps.google.com/maps?saddr=Woody%27s+Brewing+Co%2C+Redding%2C+CA&daddr=Jack%27s+Bar+and+Grill%2C+Redding%2C+CA&output=embed" title="Map of dinner picks in Redding, CA" loading="lazy"></iframe>
     </div>
     <div class="tbl">
       <div class="tbl-row">
-        <div class="col-name">Mount Shasta Craft House</div>
-        <p>Wood-fired pizzas, pastas, and burgers in a lively, family-friendly room — full bar.</p>
+        <div class="col-name">Woody's Brewing Co.</div>
+        <p>Family-owned brewery and restaurant — house-made tots, the Woody Burger, handcrafted beers, welcoming atmosphere.</p>
       </div>
       <div class="tbl-row">
-        <div class="col-name">Pipeline Craft Taps &amp; Kitchen</div>
-        <p>Near-perfect reviews for food and beer variety — burgers, pasta, and steak in a casual setting.</p>
+        <div class="col-name">Jack's Bar and Grill</div>
+        <p>Long-standing downtown Redding steakhouse — classic American fare, steaks, burgers, pub-style apps.</p>
+      </div>
+    </div>
+
+    <h3 class="tbl-sub">Mount Shasta, CA <span class="sub-note">Day 2 coffee stop, Tue 7/28</span></h3>
+    <p class="tbl-subdek">No longer the overnight — now just a ~1 hr stop up the road from Redding, directly on the route to Bend.</p>
+    <div class="map-embed map-embed-sm">
+      <iframe src="https://maps.google.com/maps?q=Seven+Suns+Coffee+%26+Cafe%2C+Mount+Shasta%2C+CA&output=embed" title="Map of coffee stop in Mount Shasta, CA" loading="lazy"></iframe>
+    </div>
+    <div class="tbl">
+      <div class="tbl-row">
+        <div class="col-name">Seven Suns Coffee &amp; Cafe</div>
+        <p>Beloved local staple for handcrafted coffee and a satisfying breakfast/lunch menu in a relaxed, community vibe — a good stretch-your-legs stop on the long Day 2 drive.</p>
       </div>
     </div>
 
@@ -805,8 +774,108 @@
     </div>
   </section>
 
+  <!-- 7. MISCELLANEOUS -->
+  <section id="panel-misc" class="tab-panel" role="tabpanel">
+    <div class="signpost">7 · Everything Else</div>
+    <h2 class="section-title">Miscellaneous</h2>
+    <p class="section-dek">Extras that don't fit neatly elsewhere — starting with Bend's live music scene. All picks below are all-ages friendly, since Ray's along for these too.</p>
+
+    <h3 class="tbl-sub">Live music &amp; jazz</h3>
+    <div class="tbl">
+      <div class="tbl-row">
+        <div class="col-name">Jazz at Joe's<span class="tag">Mood Indigo Club</span></div>
+        <div>
+          <p class="meta-line">61400 S Hwy 97, Bend, OR · Inside the Just Joe's Music showroom</p>
+          <p>Bend's dedicated jazz room — running since 2007, 100+ shows, regional and national touring jazz artists in an intimate speakeasy setting. Shows often start early evening (around 5:30–6:30pm). Confirm the all-ages policy when booking — not explicitly published.</p>
+        </div>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Jazz at the Oxford<span class="tag">All ages confirmed</span></div>
+        <div>
+          <p class="meta-line">10 NW Minnesota Ave, Bend, OR · Oxford Hotel, downtown</p>
+          <p>An annual concert series (now in its 14th year) bringing Grammy-caliber touring jazz artists to an intimate downtown room. Saturday night 8pm shows, ticketed — check the season's lineup before booking.</p>
+        </div>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">The Commonwealth Pub<span class="tag">Family-friendly reports</span></div>
+        <p>British-style pub (30 SW Century Dr #100) with recurring jazz nights through the Jazz Society of Oregon — Blue Soul Jazz, Jazz Folks, Tuesday Night Jazz. Casual setting with an outdoor area; reviewers note families with kids do fine here, though no formal all-ages policy is published.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Volcanic Theatre Pub<span class="tag">All ages venue</span></div>
+        <p>70 SW Century Dr — 11-time "best live music venue in Bend," a small black-box room with a full bar. Wide-ranging genres beyond jazz. The venue itself is all ages, but some individual shows carry a 21+ restriction — check the specific listing before buying tickets.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Midtown Ballroom &amp; Domino Room<span class="tag">Main floor all ages</span></div>
+        <p>Bend's largest indoor music complex — Midtown Ballroom, the Domino Room, and The Annex under one roof, local-to-national touring acts across genres. Main floor of both Midtown Ballroom and Domino Room is all ages; the upstairs Domino Room bar and The Annex are 21+.</p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Tower Theatre<span class="tag">All ages — check listing</span></div>
+        <p>835 NW Wall St, downtown — Central Oregon's flagship 1940 Art Deco performing-arts stage. Majority of shows are all ages (concerts, theater, film), but always worth a quick check on the specific listing before buying.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. CONDITIONS -->
+  <section id="panel-conditions" class="tab-panel" role="tabpanel">
+    <div class="signpost">8 · Conditions</div>
+    <h2 class="section-title">Trail &amp; weather conditions</h2>
+    <p class="section-dek">Live wind, rain, temperature, and air-quality snapshots for the Bend area — these are real-time widgets, so they're only useful checked close to departure, not read once and trusted for the whole trip.</p>
+
+    <div class="cond-grid">
+      <div class="cond-card">
+        <h3 class="cond-title">Air Quality (AQI)</h3>
+        <div class="cond-embed cond-embed-aqi">
+          <iframe src="https://widget.airnow.gov/aq-dial-widget/index.html?city=Bend&amp;state=OR&amp;country=USA&amp;transparent=true" title="Current AQI for Bend, OR" loading="lazy"></iframe>
+        </div>
+        <p class="cond-note">Live EPA AirNow reading for Bend. Wildfire smoke can spike this fast in July/August — check the smoke-specific resources below closer to departure.</p>
+      </div>
+      <div class="cond-card">
+        <h3 class="cond-title">Wind</h3>
+        <div class="cond-embed">
+          <iframe src="https://embed.windy.com/embed2.html?lat=44.058&amp;lon=-121.315&amp;detailLat=44.058&amp;detailLon=-121.315&amp;zoom=8&amp;level=surface&amp;overlay=wind&amp;menu=&amp;message=true&amp;calendar=now&amp;pressure=&amp;type=map&amp;location=coordinates&amp;metricWind=mph&amp;metricTemp=%C2%B0F" title="Wind forecast for Bend, OR" loading="lazy"></iframe>
+        </div>
+        <p class="cond-note">Windy.com live forecast, centered on Bend.</p>
+      </div>
+      <div class="cond-card">
+        <h3 class="cond-title">Precipitation</h3>
+        <div class="cond-embed">
+          <iframe src="https://embed.windy.com/embed2.html?lat=44.058&amp;lon=-121.315&amp;detailLat=44.058&amp;detailLon=-121.315&amp;zoom=8&amp;level=surface&amp;overlay=rain&amp;menu=&amp;message=true&amp;calendar=now&amp;pressure=&amp;type=map&amp;location=coordinates&amp;metricWind=mph&amp;metricTemp=%C2%B0F" title="Precipitation forecast for Bend, OR" loading="lazy"></iframe>
+        </div>
+        <p class="cond-note">Rain/precip radar and forecast — useful for spotting an afternoon thunderstorm before a bike park day.</p>
+      </div>
+      <div class="cond-card">
+        <h3 class="cond-title">Temperature</h3>
+        <div class="cond-embed">
+          <iframe src="https://embed.windy.com/embed2.html?lat=44.058&amp;lon=-121.315&amp;detailLat=44.058&amp;detailLon=-121.315&amp;zoom=8&amp;level=surface&amp;overlay=temp&amp;menu=&amp;message=true&amp;calendar=now&amp;pressure=&amp;type=map&amp;location=coordinates&amp;metricWind=mph&amp;metricTemp=%C2%B0F" title="Temperature forecast for Bend, OR" loading="lazy"></iframe>
+        </div>
+        <p class="cond-note">High-desert swings are wide — expect cool mornings and hot afternoons even in mid-summer.</p>
+      </div>
+    </div>
+
+    <h3 class="tbl-sub">Wildfire &amp; smoke resources</h3>
+    <p class="tbl-subdek">These can't be embedded directly (the sites block framing), so they're linked instead — worth a check in the days right before you leave.</p>
+    <div class="tbl">
+      <div class="tbl-row">
+        <div class="col-name">AirNow Fire &amp; Smoke Map</div>
+        <p>Real-time smoke plumes and monitor-based AQI overlaid on a national map — the single best source right before departure. <a class="tbl-link" href="https://fire.airnow.gov/" target="_blank">→ fire.airnow.gov</a></p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">Oregon Smoke Map</div>
+        <p>State-run map and blog focused specifically on Oregon wildfire smoke advisories. <a class="tbl-link" href="https://www.oregonsmoke.org/p/fire-and-air-quality-map.html" target="_blank">→ oregonsmoke.org</a></p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">NASA FIRMS</div>
+        <p>Satellite-detected active fire locations, updated multiple times a day. <a class="tbl-link" href="https://firms.modaps.eosdis.nasa.gov/map/" target="_blank">→ firms.modaps.eosdis.nasa.gov</a></p>
+      </div>
+      <div class="tbl-row">
+        <div class="col-name">PurpleAir Map</div>
+        <p>Crowd-sourced sensor network — denser coverage than official monitors, good for hyper-local readings around Old Mill. <a class="tbl-link" href="https://map.purpleair.com/" target="_blank">→ map.purpleair.com</a></p>
+      </div>
+    </div>
+  </section>
+
   <footer>
-    <span>Finding the Line — Bend Trip Guide</span>
+    <span>2026 Summer Bend Trip</span>
     <span>Confirm all dates, hours, and prices directly with each venue before travel</span>
   </footer>
 </div>
@@ -840,50 +909,17 @@
     if(!tabMenu.contains(e.target) && !tabDropdown.contains(e.target)){ closeMenu(); }
   });
 
-  // ---------------------------------------------------------------------
-  // Shareable URLs — the active tab is mirrored into the URL hash (so
-  // static-file/GitHub Pages hosting works with no server), and restored
-  // from it on load so a copied/shared link opens the same tab.
-  // ---------------------------------------------------------------------
-
-  function activateTab(id){
-    var btn = document.querySelector('.tab-btn[data-tab="' + id + '"]');
-    var panel = document.getElementById(id);
-    if(!btn || !panel) return false;
-    tabBtns.forEach(function(b){ b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
-    tabPanels.forEach(function(p){ p.classList.remove('active'); });
-    btn.classList.add('active');
-    btn.setAttribute('aria-selected','true');
-    panel.classList.add('active');
-    tabMenuLabel.textContent = btn.textContent.replace(/^\d+\s*·\s*/, '');
-    return true;
-  }
-
-  function syncURL(){
-    var activePanel = document.querySelector('.tab-panel.active');
-    if(!activePanel) return;
-    var params = new URLSearchParams();
-    params.set('tab', activePanel.id);
-    var hash = '#' + params.toString();
-    if(location.hash !== hash) history.replaceState(null, '', hash);
-  }
-
-  function restoreFromURL(){
-    var params = new URLSearchParams(location.hash.slice(1));
-    var tab = params.get('tab');
-    if(tab) activateTab(tab);
-  }
-
   tabBtns.forEach(function(btn){
     btn.addEventListener('click', function(){
-      activateTab(btn.dataset.tab);
-      syncURL();
+      tabBtns.forEach(function(b){ b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+      tabPanels.forEach(function(p){ p.classList.remove('active'); });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected','true');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+      tabMenuLabel.textContent = btn.textContent.replace(/^\d+\s*·\s*/, '');
       closeMenu();
     });
   });
-
-  window.addEventListener('hashchange', restoreFromURL);
-  restoreFromURL();
 </script>
 
 </body>
