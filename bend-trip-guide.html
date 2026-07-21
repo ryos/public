@@ -173,6 +173,22 @@
   .cond-embed iframe{width:100%;height:100%;border:0;display:block;}
   .cond-embed.cond-embed-aqi{aspect-ratio:1/1;max-width:280px;margin:0 auto 8px;}
   .cond-note{margin:0;font-size:13px;color:#4a4f42;}
+  .fc-wrap{
+    overflow-x:auto;border:1px solid var(--line);border-radius:3px;margin-bottom:10px;
+  }
+  .fc-table{width:100%;min-width:600px;border-collapse:collapse;background:var(--card);}
+  .fc-table thead th{
+    background:var(--paper-2);font-family:'IBM Plex Mono',monospace;font-size:11px;
+    text-transform:uppercase;letter-spacing:.06em;color:var(--pine-dark);
+    padding:10px 14px;text-align:left;white-space:nowrap;
+  }
+  .fc-table td{
+    padding:12px 14px;font-size:14px;border-top:1px dashed var(--line);white-space:nowrap;
+  }
+  .fc-table tbody tr:first-child td{border-top:none;}
+  .fc-day{font-family:'Fraunces',serif;font-weight:600;}
+  .fc-temp-hi{color:var(--rust-dark);font-weight:600;}
+  .fc-temp-lo{color:var(--sky);}
   @media (max-width:640px){
     .cond-grid{grid-template-columns:1fr;}
   }
@@ -821,6 +837,20 @@
     <h2 class="section-title">Trail &amp; weather conditions</h2>
     <p class="section-dek">Live wind, rain, temperature, and air-quality snapshots for the Bend area — these are real-time widgets, so they're only useful checked close to departure, not read once and trusted for the whole trip.</p>
 
+    <h3 class="tbl-sub">10-day forecast</h3>
+    <p class="tbl-subdek">Live daily forecast for Bend, OR — refreshes each time this page loads.</p>
+    <div class="fc-wrap">
+      <table class="fc-table">
+        <thead>
+          <tr><th>Date</th><th>Conditions</th><th>High</th><th>Low</th><th>Rain</th><th>Wind</th></tr>
+        </thead>
+        <tbody id="fc-body">
+          <tr><td colspan="6">Loading forecast…</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="cond-note" style="margin-bottom:28px;">Source: Open-Meteo (NOAA/GFS model data). For an official NWS point forecast, see <a href="https://forecast.weather.gov/MapClick.php?lat=44.0582&amp;lon=-121.3153" target="_blank">forecast.weather.gov</a>.</p>
+
     <div class="cond-grid">
       <div class="cond-card">
         <h3 class="cond-title">Air Quality (AQI)</h3>
@@ -909,17 +939,90 @@
     if(!tabMenu.contains(e.target) && !tabDropdown.contains(e.target)){ closeMenu(); }
   });
 
+  function activateTab(tabId, opts){
+    opts = opts || {};
+    var btn = document.querySelector('.tab-btn[data-tab="' + tabId + '"]');
+    var panel = document.getElementById(tabId);
+    if(!btn || !panel) return false;
+    tabBtns.forEach(function(b){ b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+    tabPanels.forEach(function(p){ p.classList.remove('active'); });
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected','true');
+    panel.classList.add('active');
+    tabMenuLabel.textContent = btn.textContent.replace(/^\d+\s*·\s*/, '');
+    if(!opts.skipHash){
+      history.replaceState(null, '', '#' + tabId);
+    }
+    return true;
+  }
+
   tabBtns.forEach(function(btn){
     btn.addEventListener('click', function(){
-      tabBtns.forEach(function(b){ b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
-      tabPanels.forEach(function(p){ p.classList.remove('active'); });
-      btn.classList.add('active');
-      btn.setAttribute('aria-selected','true');
-      document.getElementById(btn.dataset.tab).classList.add('active');
-      tabMenuLabel.textContent = btn.textContent.replace(/^\d+\s*·\s*/, '');
+      activateTab(btn.dataset.tab);
       closeMenu();
     });
   });
+
+  // Deep-link support: #panel-xxx in the URL opens that tab directly.
+  (function(){
+    var initialHash = window.location.hash.replace('#', '');
+    if(initialHash){ activateTab(initialHash, {skipHash:true}); }
+  })();
+
+  window.addEventListener('hashchange', function(){
+    var hash = window.location.hash.replace('#', '');
+    if(hash){ activateTab(hash, {skipHash:true}); }
+  });
+
+  var WX_CODES = {
+    0:'Clear',1:'Mostly Clear',2:'Partly Cloudy',3:'Overcast',
+    45:'Fog',48:'Fog',
+    51:'Light Drizzle',53:'Drizzle',55:'Heavy Drizzle',56:'Frz. Drizzle',57:'Frz. Drizzle',
+    61:'Light Rain',63:'Rain',65:'Heavy Rain',66:'Frz. Rain',67:'Frz. Rain',
+    71:'Light Snow',73:'Snow',75:'Heavy Snow',77:'Snow Grains',
+    80:'Rain Showers',81:'Rain Showers',82:'Heavy Showers',
+    85:'Snow Showers',86:'Snow Showers',
+    95:'Thunderstorm',96:'T-storm/Hail',99:'T-storm/Hail'
+  };
+
+  function loadForecast(){
+    var body = document.getElementById('fc-body');
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=44.0582&longitude=-121.3153&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=America%2FLos_Angeles&forecast_days=10')
+      .then(function(res){ if(!res.ok) throw new Error('bad response'); return res.json(); })
+      .then(function(data){
+        body.innerHTML = '';
+        data.daily.time.forEach(function(dateStr, i){
+          var d = new Date(dateStr + 'T00:00:00');
+          var label = d.toLocaleDateString('en-US', {weekday:'short', month:'numeric', day:'numeric'});
+          var desc = WX_CODES[data.daily.weather_code[i]] || '—';
+          var hi = Math.round(data.daily.temperature_2m_max[i]);
+          var lo = Math.round(data.daily.temperature_2m_min[i]);
+          var rain = data.daily.precipitation_probability_max[i];
+          var wind = Math.round(data.daily.wind_speed_10m_max[i]);
+
+          var tr = document.createElement('tr');
+          var cells = [
+            {text:label, cls:'fc-day'},
+            {text:desc},
+            {text:hi + '°', cls:'fc-temp-hi'},
+            {text:lo + '°', cls:'fc-temp-lo'},
+            {text:rain + '%'},
+            {text:wind + ' mph'}
+          ];
+          cells.forEach(function(c){
+            var td = document.createElement('td');
+            if(c.cls) td.className = c.cls;
+            td.textContent = c.text;
+            tr.appendChild(td);
+          });
+          body.appendChild(tr);
+        });
+      })
+      .catch(function(){
+        body.innerHTML = '<tr><td colspan="6">Forecast unavailable right now — try <a href="https://forecast.weather.gov/MapClick.php?lat=44.0582&lon=-121.3153" target="_blank">forecast.weather.gov</a> directly.</td></tr>';
+      });
+  }
+  loadForecast();
 </script>
 
 </body>
